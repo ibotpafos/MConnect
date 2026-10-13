@@ -1,0 +1,9 @@
+{
+  "JUCE": {"url":"https://github.com/juce-framework/JUCE.git","tag":"8.0.14","commit":"2cdfca8feb300fb424002ba2c2751569e5bacb64","license":"AGPL-3.0-only"},
+  "civetweb": {"url":"https://github.com/civetweb/civetweb.git","tag":"v1.16","commit":"d7ba35bbb649209c66e582d5a0244ba988a15159","license":"MIT"},
+  "mbedtls": {"url":"https://github.com/Mbed-TLS/mbedtls.git","tag":"mbedtls-3.6.6","commit":"0bebf8b8c7f07abe3571ded48a11aa907a1ffb20","recursive":true,"license":"Apache-2.0"},
+  "libdatachannel": {"url":"https://github.com/paullouisageneau/libdatachannel.git","tag":"v0.24.1","commit":"a02b751917ac8afc8c58dc6f4461d25ff9465d48","recursive":true,"license":"MPL-2.0"},
+  "opus": {"url":"https://github.com/xiph/opus.git","tag":"v1.6.1","commit":"22244de5a79bd1d6d623c32e72bf1954b56235be","license":"BSD-3-Clause"},
+  "libsamplerate": {"url":"https://github.com/libsndfile/libsamplerate.git","tag":"0.2.2","commit":"c96f5e3de9c4488f4e6c97f59f5245f22fda22f7","license":"BSD-2-Clause"},
+  "qrcodegen": {"url":"https://github.com/nayuki/QR-Code-generator.git","tag":"v1.8.0","commit":"720f62bddb7226106071d4728c292cb1df519ceb","license":"MIT"}
+}

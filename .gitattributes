@@ -1,0 +1,16 @@
+* text=auto
+*.sh text eol=lf
+*.command text eol=lf
+*.py text eol=lf
+*.cjs text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.mm text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.png binary
+*.zip binary
+*.pkg binary
+# Preserve the verbatim upstream license texts, including their whitespace.
+LICENSES_THIRD_PARTY.md -whitespace

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101016">
+  <meta name="referrer" content="no-referrer">
+  <title>MConnect — Listen to your mix</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header><span class="mark" aria-hidden="true">M</span><span class="brand">MConnect</span><span class="badge" data-i18n="local">LOCAL AUDIO</span></header>
+    <section class="hero">
+      <p class="eyebrow" data-i18n="eyebrow">A DIFFERENT PERSPECTIVE</p>
+      <h1 data-i18n="title">Your mix.<br>Your phone.</h1>
+      <p class="intro" data-i18n="intro">Hear your DAW through the speakers you know. Live, right here.</p>
+    </section>
+    <section class="receiver" aria-label="Audio receiver">
+      <div class="status"><span id="dot" class="dot"></span><span id="status" role="status" aria-live="polite">Ready to listen</span><span id="format" class="format">STEREO</span></div>
+      <div class="meters" aria-label="Stereo input level"><div class="meter-row"><span>L</span><div class="meter"><i id="leftMeter"></i></div></div><div class="meter-row"><span>R</span><div class="meter"><i id="rightMeter"></i></div></div></div>
+      <button id="listen" class="primary" type="button"><span id="buttonIcon" aria-hidden="true">▶</span><span id="buttonText">Listen</span></button>
+      <button id="stop" class="secondary" type="button" hidden data-i18n="stop">Disconnect</button>
+      <audio id="audio" playsinline hidden aria-label="Live DAW audio"></audio>
+      <p id="hint" class="hint" data-i18n="hint">Keep this page open. Use your phone's volume buttons.</p>
+      <div id="details" class="details" hidden><span id="quality">—</span><span id="buffer">—</span><span id="loss">—</span></div>
+    </section>
+    <p id="error" class="error" role="alert" hidden></p>
+    <aside><span class="wifi" aria-hidden="true">◎</span><p data-i18n="network">Your phone and computer need to be on the same Wi-Fi or local network.</p></aside>
+    <footer><span data-i18n="footer">From the master bus, to you.</span><nav><a href="/source.zip" download="MConnect-source.zip" data-i18n="source">Source</a><a href="/license" data-i18n="license">License</a></nav></footer>
+  </main>
+</body>
+</html>

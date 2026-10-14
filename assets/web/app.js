@@ -140,7 +140,10 @@
         const lossRatio = newLoss / Math.max(1,newPackets+newLoss);
         const concealRatio = before ? Math.max(0,concealed-before.concealed) / Math.max(1,samples-before.samples) : 0;
         const impaired = lossRatio > .01 || concealRatio > .01;
-        const wanted = Math.min(180,Math.ceil(Math.max(details.bufferMs || 30,(report.jitter || 0)*3000+(impaired?20:0))));
+        const networkMinimum = Math.ceil(Math.max(details.bufferMs || 30,(report.jitter || 0)*3000));
+        // Loss/concealment must raise the current target even when jitter is
+        // small. Adding a penalty inside Math.max could leave it at 30 ms.
+        const wanted = Math.min(180,impaired ? Math.max(networkMinimum,autoBuffer+20) : networkMinimum);
         const now = performance.now();
         if (newPackets > 0) lastPacketTime = now;
         if (wanted > autoBuffer+5) { autoBuffer = wanted; healthySince = 0; }

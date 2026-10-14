@@ -5,6 +5,8 @@
 #include <cstring>
 #include <iostream>
 #include <thread>
+#include <utility>
+#include <rtc/utils.hpp>
 
 using namespace mconnect;
 static void require(bool value, const char* message) { if (!value) throw std::runtime_error(message); }
@@ -83,6 +85,50 @@ static void fifoVerification()
     fifo.pushFromAudioThread(mono, 1, 8); fifo.discardFromConsumer(100);
     require(fifo.getAvailableFrames() == 0, "consumer discard");
 }
+static void callbackResetSafety()
+{
+    rtc::synchronized_stored_callback<> callback;
+    auto reset = [&] { for (int i = 0; i < 4000; ++i) callback = nullptr; };
+    std::thread first(reset), second(reset);
+    for (int i = 0; i < 4000; ++i) callback();
+    first.join(); second.join();
+    callback = nullptr;
+    callback();
+    int replayed = 0;
+    callback = std::function<void()>([&] { ++replayed; });
+    require(replayed == 1, "stored callback did not replay its missed event");
+    callback = nullptr;
+    callback = std::function<void()>([&] { ++replayed; });
+    require(replayed == 1, "callback reset retained an obsolete event");
+}
+static void stateRestoration()
+{
+    MConnectAudioProcessor processor;
+    auto* parameter = processor.parameters.getParameter(ParamIDs::streamEnabled);
+    require(parameter->isBoolean() && parameter->isDiscrete() && parameter->getNumSteps() == 2,
+            "stream switch host metadata changed");
+    for (const auto values : {std::pair{0.340869f, 0.0489689f}, std::pair{0.8f, 0.52f},
+                             std::pair{0.499f, 0.501f}, std::pair{0.5f, 0.0f}, std::pair{1.0f, 0.0f}})
+    {
+        parameter->setValueNotifyingHost(values.first);
+        const auto expected = parameter->getValue();
+        juce::MemoryBlock saved;
+        processor.getStateInformation(saved);
+        parameter->setValueNotifyingHost(values.second);
+        processor.setStateInformation(saved.getData(), static_cast<int>(saved.getSize()));
+        require(parameter->getValue() == expected, "fractional automation state was not restored");
+        require(configFromState(processor.parameters, 48000).streamEnabled == (values.first >= 0.5f),
+                "restored Stream value changed its on/off behavior");
+    }
+    // Presets saved before normalized-value preservation contain only APVTS.
+    parameter->setValueNotifyingHost(0.0f);
+    auto legacyXml = processor.parameters.copyState().createXml();
+    juce::MemoryBlock legacy;
+    juce::AudioProcessor::copyXmlToBinary(*legacyXml, legacy);
+    parameter->setValueNotifyingHost(1.0f);
+    processor.setStateInformation(legacy.getData(), static_cast<int>(legacy.getSize()));
+    require(parameter->getValue() == 0.0f, "legacy Stream preset was not restored");
+}
 static double amplitude(const std::vector<float>& samples, double frequency, int channel)
 {
     const size_t begin = 3000, frames = samples.size()/2;
@@ -135,7 +181,7 @@ static void resampling()
 int main()
 {
     juce::ScopedJuceInitialiser_GUI init;
-    try { passthrough<float>(); passthrough<double>(); fifoVerification(); resampling(); }
+    try { passthrough<float>(); passthrough<double>(); stateRestoration(); callbackResetSafety(); fifoVerification(); resampling(); }
     catch (const std::exception& e) { std::cerr << "FAIL: " << e.what() << '\n'; return 1; }
     std::cout << "PASS: passthrough float/double, bypass/offline, mono/state, concurrent overflow, stereo SRC and alias rejection\n";
     return 0;

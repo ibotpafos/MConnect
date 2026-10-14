@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
-project(MConnect VERSION 0.1.1 LANGUAGES C CXX)
+project(MConnect VERSION 0.1.2 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -54,6 +54,7 @@ set(GCM OFF CACHE BOOL "" FORCE)
 set(LIBSRTP_TEST_APPS OFF CACHE BOOL "" FORCE)
 set(ENABLE_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/libdatachannel EXCLUDE_FROM_ALL)
+include(cmake/LibDataChannelCallbacks.cmake)
 set(LIBSAMPLERATE_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(LIBSAMPLERATE_INSTALL OFF CACHE BOOL "" FORCE)
 set(LIBSAMPLERATE_ENABLE_SINC_BEST_CONVERTER OFF CACHE BOOL "" FORCE)
@@ -62,9 +63,36 @@ set(LIBSAMPLERATE_ENABLE_SINC_MEDIUM_CONVERTER ON CACHE BOOL "" FORCE)
 set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/libsamplerate EXCLUDE_FROM_ALL)
 
-add_library(civetweb_static STATIC external/civetweb/src/civetweb.c)
+# CivetWeb 1.16's atomic-stop option still reads *f non-atomically and retries
+# after a successful store. Patch only that helper in a generated build copy;
+# the pinned upstream checkout stays intact and the fix is reproducible.
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/external/civetweb/src/civetweb.c" MCONNECT_CIVET_SOURCE)
+set(MCONNECT_CIVET_STOP_OLD [=[
+	stop_flag_t sf;
+	do {
+		sf = mg_atomic_compare_and_swap(f, *f, v);
+	} while (sf != v);
+]=])
+set(MCONNECT_CIVET_STOP_NEW [=[
+	stop_flag_t expected = mg_atomic_add(f, 0);
+	for (;;) {
+		stop_flag_t previous = mg_atomic_compare_and_swap(f, expected, v);
+		if (previous == expected) {
+			return;
+		}
+		expected = previous;
+	}
+]=])
+string(FIND "${MCONNECT_CIVET_SOURCE}" "${MCONNECT_CIVET_STOP_OLD}" MCONNECT_CIVET_STOP_OFFSET)
+if(MCONNECT_CIVET_STOP_OFFSET EQUAL -1)
+    message(FATAL_ERROR "Pinned CivetWeb stop helper changed; review the atomic shutdown patch")
+endif()
+string(REPLACE "${MCONNECT_CIVET_STOP_OLD}" "${MCONNECT_CIVET_STOP_NEW}" MCONNECT_CIVET_SOURCE "${MCONNECT_CIVET_SOURCE}")
+file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/generated/civetweb.c" CONTENT "${MCONNECT_CIVET_SOURCE}")
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/external/civetweb/src/civetweb.c")
+add_library(civetweb_static STATIC "${CMAKE_CURRENT_BINARY_DIR}/generated/civetweb.c")
 target_include_directories(civetweb_static PUBLIC external/civetweb/include PRIVATE external/civetweb/src)
-target_compile_definitions(civetweb_static PRIVATE USE_WEBSOCKET USE_IPV6 NO_CGI NO_FILES NO_CACHING USE_MBEDTLS USE_STACK_SIZE=102400)
+target_compile_definitions(civetweb_static PRIVATE USE_WEBSOCKET USE_IPV6 NO_CGI NO_FILES NO_CACHING USE_MBEDTLS USE_STACK_SIZE=102400 STOP_FLAG_NEEDS_LOCK)
 target_link_libraries(civetweb_static PRIVATE MbedTLS::MbedTLS MbedTLS::X509 MbedTLS::Crypto)
 if(WIN32)
     target_compile_definitions(civetweb_static PRIVATE _CRT_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN NOMINMAX)
@@ -121,7 +149,7 @@ if(MCONNECT_BUILD_TESTS)
     enable_testing()
     juce_add_console_app(MConnectTests PRODUCT_NAME "MConnect integration tests")
     target_sources(MConnectTests PRIVATE tests/CoreTests.cpp)
-    target_include_directories(MConnectTests PRIVATE src)
+    target_include_directories(MConnectTests PRIVATE src "${MCONNECT_RTC_INCLUDE_DIR}")
     target_link_libraries(MConnectTests PRIVATE MConnect)
     target_compile_definitions(MConnectTests PRIVATE JucePlugin_Build_Standalone=1)
     add_test(NAME core COMMAND MConnectTests)

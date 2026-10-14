@@ -30,15 +30,29 @@ async function measure() {
     await page.addInitScript(()=>{
       const Native = window.RTCPeerConnection;
       window.RTCPeerConnection = class extends Native { constructor(config){super(config);window.benchmarkPeer=this;} };
+      // As in receiver.cjs, keep a live audio graph in the headless test
+      // browser. This is separate from the process whose CPU is measured and
+      // is never part of the shipped phone page.
+      document.addEventListener('click',()=>{
+        const stream=document.querySelector('audio')?.srcObject;
+        if(window.benchmarkAudio||!stream)return;
+        const context=new AudioContext({sampleRate:48000}),input=context.createMediaStreamSource(stream),quiet=context.createGain();
+        quiet.gain.value=1e-6;input.connect(quiet);quiet.connect(context.destination);
+        window.benchmarkAudio=context;context.resume();
+      },true);
     });
     const url = new URL(info.url); url.hostname="127.0.0.1";
     await page.goto(url.href);
     await page.waitForFunction(()=>document.querySelector("audio").srcObject && (!document.querySelector("#listen").disabled || document.querySelector("#listen").hidden),{},{timeout:20000});
     if(await page.locator("#listen").isVisible()) await page.locator("#listen").click();
     await page.waitForFunction(()=>!document.querySelector("audio").paused);
-    await sleep(2000);
+    if(!await page.evaluate(()=>Boolean(window.benchmarkAudio)))await page.mouse.click(10,10);
+    await page.waitForFunction(()=>window.benchmarkAudio?.state==='running');
+    // Hidden macOS browser audio can start late and NetEq then catches up.
+    // Measure steady playback after that settling period, not startup backlog.
+    await sleep(8000);
     const initial = await page.evaluate(async()=>{
-      let result={}; (await window.benchmarkPeer.getStats()).forEach(r=>{if(r.type==='inbound-rtp'&&(r.kind||r.mediaType)==='audio')result={delay:r.jitterBufferDelay,emitted:r.jitterBufferEmittedCount,packets:r.packetsReceived};}); return result;
+      let result={}; (await window.benchmarkPeer.getStats()).forEach(r=>{if(r.type==='inbound-rtp'&&(r.kind||r.mediaType)==='audio')result={delay:r.jitterBufferDelay,emitted:r.jitterBufferEmittedCount,packets:r.packetsReceived,loss:r.packetsLost,concealed:r.concealedSamples,energy:r.totalAudioEnergy};}); return result;
     });
     const startInfo = await page.request.get(url.origin+'/info',{headers:{'X-MConnect-Token':url.hash.slice(1)}}).then(r=>r.json());
     const windowStart = performance.now();
@@ -47,6 +61,7 @@ async function measure() {
     const receiver = await page.evaluate(async()=>{
       const reports=await window.benchmarkPeer.getStats();let result={};
       reports.forEach(r=>{if(r.type==="inbound-rtp"&&(r.kind||r.mediaType)==="audio")result={packets:r.packetsReceived,loss:r.packetsLost,jitterMs:r.jitter*1000,bufferMs:r.jitterBufferEmittedCount?r.jitterBufferDelay*1000/r.jitterBufferEmittedCount:null,targetMs:r.jitterBufferEmittedCount?r.jitterBufferTargetDelay*1000/r.jitterBufferEmittedCount:null,minimumMs:r.jitterBufferEmittedCount?r.jitterBufferMinimumDelay*1000/r.jitterBufferEmittedCount:null,concealed:r.concealedSamples,inserted:r.insertedSamplesForDeceleration,removed:r.removedSamplesForAcceleration,audioEnergy:r.totalAudioEnergy};});
+      reports.forEach(r=>{if(r.type==='transport'&&r.selectedCandidatePairId){const pair=reports.get(r.selectedCandidatePairId),local=reports.get(pair.localCandidateId),remote=reports.get(pair.remoteCandidateId);result.route={localAddress:local.address,remoteAddress:remote.address,protocol:local.protocol,localType:local.candidateType,remoteType:remote.candidateType,roundTripMs:1000*pair.currentRoundTripTime};}});
       const receiver=window.benchmarkPeer.getReceivers()[0]; result.requestedTarget=receiver.jitterBufferTarget; result.playoutHint=receiver.playoutDelayHint; return result;
     });
     const endInfo = await page.request.get(url.origin+'/info',{headers:{'X-MConnect-Token':url.hash.slice(1)}}).then(r=>r.json());
@@ -56,9 +71,16 @@ async function measure() {
         let delay=null; (await window.benchmarkPeer.getStats()).forEach(r=>{if(r.type==='inbound-rtp'&&(r.kind||r.mediaType)==='audio'&&r.jitterBufferEmittedCount>start.emitted)delay=1000*(r.jitterBufferDelay-start.delay)/(r.jitterBufferEmittedCount-start.emitted);}); return delay;
       },initial);
     const workerWakeupsPerSecond = Number.isFinite(endInfo.workerWakeups) ? (endInfo.workerWakeups-startInfo.workerWakeups)/windowSeconds : null;
-    if (!(receiver.packets>=500&&receiver.audioEnergy>.01)) console.error(JSON.stringify({inputSampleRate:rate,receiver,sender:endInfo}));
-    assert.ok(receiver.packets >= 500 && receiver.audioEnergy > .01,"Insufficient audio delivery for a meaningful CPU benchmark");
-    const result={version:endInfo.version,inputSampleRate:rate,baselineProcessCpuOneCorePercent:baseline,streamingProcessCpuOneCorePercent:active,incrementalStreamingCpuOneCorePercent:Math.max(0,active-baseline),processRssMiB:rssKb/1024,workerWakeupsPerSecond,receiver};
+    receiver.intervalPackets=receiver.packets-initial.packets;
+    receiver.intervalLoss=Math.max(0,receiver.loss-initial.loss);
+    receiver.intervalConcealed=Math.max(0,receiver.concealed-initial.concealed);
+    receiver.intervalAudioEnergy=receiver.audioEnergy-initial.energy;
+    if (!(receiver.intervalPackets>=500&&receiver.intervalAudioEnergy>.01)) console.error(JSON.stringify({inputSampleRate:rate,receiver,sender:endInfo}));
+    assert.ok(receiver.intervalPackets >= 500 && receiver.intervalAudioEnergy > .01,"Insufficient interval audio delivery for a meaningful CPU benchmark");
+    assert.equal(receiver.route?.remoteAddress,new URL(info.url).hostname,'Media used a different interface than the QR link');
+    assert.ok(receiver.intervalLoss/Math.max(1,receiver.intervalPackets+receiver.intervalLoss)<=.01,'More than 1% packet loss during the measured interval');
+    assert.equal(endInfo.encodeErrors,0);assert.equal(endInfo.conversionErrors,0);
+    const result={version:endInfo.version,inputSampleRate:rate,baselineProcessCpuOneCorePercent:baseline,streamingProcessCpuOneCorePercent:active,incrementalStreamingCpuOneCorePercent:Math.max(0,active-baseline),processRssMiB:rssKb/1024,workerWakeupsPerSecond,receiver,sender:endInfo};
     fs.mkdirSync("test-results",{recursive:true});fs.writeFileSync("test-results/performance-"+rate+".json",JSON.stringify(result,null,2));
     console.log(JSON.stringify(result));
   } finally {if(browser)await browser.close();source.kill("SIGTERM");fs.rmSync(temporary,{recursive:true,force:true});}

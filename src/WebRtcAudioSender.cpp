@@ -1,8 +1,10 @@
 // Derived from PGStream by Andrulius (AGPL-3.0-only). See NOTICE.md.
 #include "WebRtcAudioSender.h"
+#include "NetworkInterfaceUtils.h"
 #include <civetweb.h>
 #include <opus.h>
 #include <rtc/rtc.hpp>
+#include <mbedtls/aes.h>
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -285,6 +287,17 @@ WebRtcAudioSender::WebRtcAudioSender(std::shared_ptr<juce::WaitableEvent> activi
               opus_encoder_destroy(encoderToDestroy);
     })
 {
+    // Warm architecture-specific AES capability caches before any RTC worker
+    // uses them. Older backends initialise these caches with volatile stores.
+    static std::once_flag cryptoInitialized;
+    std::call_once(cryptoInitialized, []
+    {
+        mbedtls_aes_context context;
+        unsigned char key[16] {};
+        mbedtls_aes_init(&context);
+        static_cast<void>(mbedtls_aes_setkey_enc(&context, key, 128));
+        mbedtls_aes_free(&context);
+    });
     opusPacket.resize(4096);
 }
 
@@ -486,6 +499,10 @@ void WebRtcAudioSender::handleOffer(mg_connection* connection, const juce::var& 
         rtcConfig.disableAutoNegotiation = true;
         rtcConfig.forceMediaTransport = ! peerConfig.usesPcmDataChannel();
         rtcConfig.enableIceTcp = false;
+        // Use the LAN interface chosen for the QR link. Unrestricted ICE can
+        // select a VPN interface and send local monitoring through its tunnel.
+        const auto lan = selectBestLanInterface(peerConfig.port, peerConfig.usesHttps());
+        rtcConfig.bindAddress = toStdString(lan.primaryAddress);
 
         auto peer = std::make_shared<Peer>();
         peer->connection = connection;

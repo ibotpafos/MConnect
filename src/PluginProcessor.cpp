@@ -70,13 +70,26 @@ void MConnectAudioProcessor::handleAsyncUpdate()
 }
 void MConnectAudioProcessor::getStateInformation(juce::MemoryBlock& data)
 {
-    if (auto xml = parameters.copyState().createXml()) copyXmlToBinary(*xml, data);
+    auto state = parameters.copyState();
+    // A host can supply fractional normalised values even for a boolean.
+    // APVTS stores its snapped 0/1 value; preserve the host-facing value too.
+    state.setProperty("streamNormalizedValue",
+                      parameters.getParameter(ParamIDs::streamEnabled)->getValue(), nullptr);
+    if (auto xml = state.createXml()) copyXmlToBinary(*xml, data);
 }
 void MConnectAudioProcessor::setStateInformation(const void* data, int size)
 {
     if (auto xml = getXmlFromBinary(data, size); xml && xml->hasTagName(parameters.state.getType()))
     {
-        parameters.replaceState(juce::ValueTree::fromXml(*xml));
+        auto state = juce::ValueTree::fromXml(*xml);
+        const auto hasNormalizedValue = state.hasProperty("streamNormalizedValue");
+        const auto normalizedValue = static_cast<float>(static_cast<double>(state.getProperty("streamNormalizedValue")));
+        state.removeProperty("streamNormalizedValue", nullptr);
+        parameters.replaceState(state);
+        // Explicitly restore even when APVTS sees no change to its snapped
+        // value. Older states without the extra field keep their original path.
+        if (hasNormalizedValue && std::isfinite(normalizedValue))
+            parameters.getParameter(ParamIDs::streamEnabled)->setValueNotifyingHost(juce::jlimit(0.0f, 1.0f, normalizedValue));
         triggerAsyncUpdate();
     }
 }

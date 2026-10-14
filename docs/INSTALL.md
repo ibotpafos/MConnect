@@ -2,7 +2,7 @@
 
 ## Установщик
 
-Файл `MConnect-0.1.1-macos-universal.pkg` можно переслать целиком. Он содержит
+Файл `MConnect-0.1.2-macos-universal.pkg` можно переслать целиком. Он содержит
 AU и VST3 для Apple Silicon и Intel; минимальная версия системы — macOS 11.
 На телефоне используется браузер: Safari на iOS или Chrome на Android.
 
@@ -52,7 +52,7 @@ Developer ID Application для плагинов, Developer ID Installer для 
 
 ```sh
 python3 scripts/package_macos.py build
-python3 tests/installer.py dist/MConnect-0.1.1-macos-universal.pkg
+python3 tests/installer.py dist/MConnect-0.1.2-macos-universal.pkg
 ```
 
 Для проверки реальной установки и повторного обновления на своём Mac добавьте

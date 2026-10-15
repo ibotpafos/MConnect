@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3 — 2026-10-15
+
+- Add quiet daily update checks and manual checks in the existing plugin editor.
+- Download the macOS installer on request and verify its size and GitHub SHA-256 digest before offering it.
+- Cache release information across sessions, keep known updates available offline and cancel requests on editor close.
+- Use the system macOS HTTPS transport without an updater app or background daemon.
+- Prepare a verified GitHub Releases publication workflow, with a local preview and explicit upload/publish modes.
+- Keep the existing interface and audio processing unchanged.
+
 ## 0.1.2 — 2026-10-14
 
 - Preserve exact normalized Stream automation values in saved state, with support for earlier presets.

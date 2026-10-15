@@ -16,7 +16,7 @@ MConnectAudioProcessorEditor::MConnectAudioProcessorEditor(MConnectAudioProcesso
     look.setColour(juce::TextButton::buttonColourId, panel);
     look.setColour(juce::TextButton::textColourOffId, accent);
     setLookAndFeel(&look);
-    addAndMakeVisible(stream); addAndMakeVisible(copy);
+    addAndMakeVisible(stream); addAndMakeVisible(copy); addAndMakeVisible(update);
     stream.onClick = [this]
     {
         auto* parameter = owner.parameters.getParameter(ParamIDs::streamEnabled);
@@ -25,9 +25,23 @@ MConnectAudioProcessorEditor::MConnectAudioProcessorEditor(MConnectAudioProcesso
         parameter->endChangeGesture();
     };
     copy.onClick = [this] { juce::SystemClipboard::copyTextToClipboard(pairingUrl); copy.setButtonText("Copied"); copyTicks = 10; };
+    update.onClick = [this]
+    {
+        const auto status = updater->snapshot();
+        if (status.phase == updates::Phase::ready)
+        {
+            // Recheck on the worker: macOS may purge cache files while a window
+            // stays open. Missing/changed packages are downloaded again.
+            installWhenReady = true;
+            updater->download();
+        }
+        else if (status.release) updater->download();
+        else updater->check(true);
+    };
     stream.setTooltip("Stop or start phone monitoring. Your DAW audio stays unchanged.");
     copy.setTooltip("Alternative to scanning the QR. The link includes the pairing key.");
-    setSize(420, 510); timerCallback(); startTimerHz(5);
+    update.setTooltip("Checks GitHub Releases once a day. Audio stays on your local network. Updates are installed after closing the DAW.");
+    setSize(420, 540); updater->check(); timerCallback(); startTimerHz(5);
 }
 MConnectAudioProcessorEditor::~MConnectAudioProcessorEditor()
 {
@@ -37,6 +51,7 @@ void MConnectAudioProcessorEditor::resized()
 {
     stream.setBounds(307, 26, 83, 30);
     copy.setBounds(151, 420, 118, 28);
+    update.setBounds(30, 503, 360, 24);
 }
 void MConnectAudioProcessorEditor::timerCallback()
 {
@@ -71,6 +86,35 @@ void MConnectAudioProcessorEditor::timerCallback()
     for (int i = 0; i < 2; ++i) displayedPeaks[i] = juce::jmax(owner.getPeak(i), displayedPeaks[i] * 0.65f);
     repaint(28, 470, 364, 18);
     if (copyTicks > 0 && --copyTicks == 0) copy.setButtonText("Copy link");
+    const auto status = updater->snapshot();
+    if (installWhenReady && status.phase == updates::Phase::ready)
+    {
+        installWhenReady = false;
+        const auto installer = status.installer;
+        installPrompt = juce::AlertWindow::showScopedAsync(juce::MessageBoxOptions()
+            .withIconType(juce::MessageBoxIconType::InfoIcon).withTitle("MConnect update")
+            .withMessage("The installer is ready. Save your project and close the DAW before continuing the installation. The new version will load next time you open the DAW.")
+            .withButton("Open installer").withButton("Later").withAssociatedComponent(this),
+            [installer](int result) { if (result == 1 && installer.existsAsFile()) installer.startAsProcess(); });
+    }
+    if (status.phase == updates::Phase::available || status.phase == updates::Phase::failed)
+        installWhenReady = false;
+    auto label = juce::String("v") + MCONNECT_VERSION + "  ·  Check updates";
+    if (status.phase == updates::Phase::checking) label = "Checking for updates...";
+    if (status.release)
+    {
+        label = "Update " + status.release->version + " available  ·  Download";
+        if (status.error.isNotEmpty()) label = "Update " + status.release->version + "  ·  Retry download";
+    }
+    if (status.phase == updates::Phase::downloading)
+        label = installWhenReady ? "Preparing installer..." : "Downloading update... " + juce::String(status.percent) + "%";
+    if (status.phase == updates::Phase::ready) label = "Update " + status.release->version + " ready  ·  Open installer";
+    if (status.phase == updates::Phase::current) label = juce::String("v") + MCONNECT_VERSION + "  ·  Up to date";
+    if (label != updateText) { updateText = label; update.setButtonText(label); }
+    update.setTooltip(status.error.isNotEmpty() ? status.error
+        : "Checks GitHub Releases once a day. Audio stays on your local network. Updates are installed after closing the DAW.");
+    update.setEnabled(status.phase != updates::Phase::checking && status.phase != updates::Phase::downloading);
+    if (++updateTicks >= 300) { updateTicks = 0; updater->check(); }
 }
 void MConnectAudioProcessorEditor::paint(juce::Graphics& g)
 {

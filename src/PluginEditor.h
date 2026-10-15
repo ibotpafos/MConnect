@@ -1,5 +1,6 @@
 #pragma once
 #include "PluginProcessor.h"
+#include "PluginUpdates.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 namespace mconnect
 {
@@ -14,7 +15,12 @@ private:
     void timerCallback() override;
     MConnectAudioProcessor& owner;
     juce::LookAndFeel_V4 look;
-    juce::TextButton stream {"Stop"}, copy {"Copy link"};
+    juce::TextButton stream {"Stop"}, copy {"Copy link"}, update;
+    juce::SharedResourcePointer<updates::Service> updater;
+    juce::ScopedMessageBox installPrompt;
+    juce::String updateText;
+    int updateTicks = 0;
+    bool installWhenReady = false;
     juce::Image qr;
     juce::String pairingUrl, currentStatus;
     bool running = false;

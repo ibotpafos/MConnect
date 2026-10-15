@@ -154,8 +154,6 @@ def main():
         for name in ("README.md", "CHANGELOG.md", *LICENSE_FILES):
             shutil.copyfile(ROOT / name, stage / name)
         shutil.copytree(ROOT / "docs", stage / "docs")
-        if (ROOT / "test-results").exists():
-            shutil.copytree(ROOT / "test-results", stage / "test-results")
         shutil.copyfile(ROOT / "scripts/Install.command", stage / "Install.command")
         (stage / "Install.command").chmod(0o755)
         shutil.copyfile(build / "generated/source.zip", stage / "MConnect-source.zip")
@@ -173,8 +171,10 @@ def main():
         final_product = output / product.name
         product.replace(final_product)
         checksums = output / f"{basename}.sha256"
+        source_archive = output / f"MConnect-{version}-source.zip"
+        shutil.copyfile(build / "generated/source.zip", source_archive)
         entries = []
-        for path in (final_product, archive):
+        for path in (final_product, archive, source_archive):
             digest = hashlib.sha256(path.read_bytes()).hexdigest()
             entries.append(f"{digest}  {path.name}\n")
         checksums.write_text("".join(entries))

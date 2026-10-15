@@ -3,7 +3,7 @@
 Проверка расширена до pluginval strictness 10, AddressSanitizer/UndefinedBehaviorSanitizer,
 ThreadSanitizer и длительной передачи четырём браузерным слушателям. DAW не запускается:
 аудио генерирует отдельный тестовый хост, который не входит в установку.
-Результаты и границы испытаний — в [VALIDATION.md](VALIDATION.md).
+Результаты и границы испытаний — в [VALIDATION_0.1.2.md](VALIDATION_0.1.2.md).
 
 ## Сохранение состояния
 

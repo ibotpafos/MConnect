@@ -18,8 +18,17 @@ Reply fetch(const Request& request, const Cancelled& cancelled, const Progress& 
         configuration.HTTPCookieStorage = nil;
         configuration.URLCredentialStorage = nil;
         configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-        configuration.timeoutIntervalForRequest = 10;
-        configuration.timeoutIntervalForResource = request.destination == juce::File() ? 15 : 180;
+        const bool metadata = request.destination == juce::File();
+        if (!metadata)
+        {
+            const juce::File temporary(juce::String([NSFileManager defaultManager].temporaryDirectory.path.UTF8String));
+            if (temporary.getBytesFreeOnVolume() < request.limit * 2 + 1024 * 1024)
+                return {0, {}, "Not enough disk space for update"};
+        }
+        // A CDN may pause between chunks. Keep metadata checks short, but don't
+        // abandon an otherwise progressing installer after ten idle seconds.
+        configuration.timeoutIntervalForRequest = metadata ? 10 : 60;
+        configuration.timeoutIntervalForResource = metadata ? 15 : 600;
         configuration.waitsForConnectivity = NO;
         auto* queue = [[NSOperationQueue alloc] init];
         queue.maxConcurrentOperationCount = 1;
@@ -32,24 +41,41 @@ Reply fetch(const Request& request, const Cancelled& cancelled, const Progress& 
         struct Completion { Reply reply; std::atomic<bool> done {false}; };
         const auto completion = std::make_shared<Completion>();
         const auto semaphore = dispatch_semaphore_create(0);
-        auto* task = [session downloadTaskWithRequest:http completionHandler:^(NSURL* location, NSURLResponse* response, NSError* error)
+        const bool resuming = !metadata && request.resumeData.getSize() > 0;
+        auto finished = ^(NSURL* location, NSURLResponse* response, NSError* error)
         {
             auto& reply = completion->reply;
             if ([response isKindOfClass:[NSHTTPURLResponse class]])
                 reply.status = static_cast<int>(((NSHTTPURLResponse*)response).statusCode);
             // Reject a TLS-to-HTTP redirect even if Foundation followed it.
             if (error || !location || ![response.URL.scheme isEqualToString:@"https"])
+            {
                 reply.error = "Network request failed";
-            else if (reply.status == 200)
+                if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSFileWriteOutOfSpaceError)
+                    reply.error = "Not enough disk space for update";
+                else if ([error.domain isEqualToString:NSURLErrorDomain]
+                    && (error.code == NSURLErrorCannotCreateFile || error.code == NSURLErrorCannotWriteToFile))
+                    reply.error = "Could not write update file";
+                auto* data = error.userInfo[NSURLSessionDownloadTaskResumeData];
+                if (!metadata && [data isKindOfClass:[NSData class]] && [data length] <= maximumMetadataBytes)
+                    reply.resumeData = juce::MemoryBlock([data bytes], [data length]);
+            }
+            else if (reply.status == 200 || (resuming && reply.status == 206))
             {
                 const juce::File file(juce::String(location.path.UTF8String));
                 if (file.getSize() <= 0 || file.getSize() > request.limit) reply.error = "Response size limit";
                 else if (request.destination == juce::File()) reply.body = file.loadFileAsString();
                 else if (!file.copyFileTo(request.destination)) reply.error = "Could not save download";
+                // Foundation supplies the reconstructed file after a resumed
+                // range response. The worker still checks its full size/SHA.
+                if (resuming && reply.status == 206 && reply.error.isEmpty()) reply.status = 200;
             }
             completion->done.store(true, std::memory_order_release);
             dispatch_semaphore_signal(semaphore);
-        }];
+        };
+        auto* task = resuming
+            ? [session downloadTaskWithResumeData:[NSData dataWithBytes:request.resumeData.getData() length:request.resumeData.getSize()] completionHandler:finished]
+            : [session downloadTaskWithRequest:http completionHandler:finished];
         task.priority = NSURLSessionTaskPriorityLow;
         [task resume];
         bool stopped = false;

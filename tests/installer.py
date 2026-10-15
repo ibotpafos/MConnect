@@ -97,8 +97,8 @@ def verify(package, install=False):
             binary = payloads[kind] / relative / "Contents/MacOS/MConnect"
             require(source_bytes in binary.read_bytes(), f"Embedded source archive differs: {binary}")
         resources = expanded / "Resources"
-        require((resources / "license.txt").read_bytes() == (ROOT / "LICENSE").read_bytes(),
-                "Installer license is missing")
+        require(distribution.find("license") is None,
+                "Updates must not add a mandatory license-acceptance step; license content is checked in the payload")
         for language in ("en.lproj", "ru.lproj"):
             for name in ("welcome.html", "conclusion.html"):
                 require((resources / language / name).is_file(), f"Missing localized screen: {language}/{name}")

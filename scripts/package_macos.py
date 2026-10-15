@@ -113,8 +113,10 @@ def create_installer(stage, workspace, version, installer_identity):
                                      enable_currentUserHome="true")
     ET.SubElement(gui, "title").text = f"MConnect {version}"
     ET.SubElement(gui, "product", id="audio.mconnect.installer", version=version)
+    # AGPL section 9 does not require acceptance to receive/run a copy. Keep
+    # the license in the payload and embedded source without an extra
+    # agreement step on every update.
     for section, filename, mime in (("welcome", "welcome.html", "text/html"),
-                                   ("license", "license.txt", "text/plain"),
                                    ("conclusion", "conclusion.html", "text/html")):
         ET.SubElement(gui, section, {"file": filename, "mime-type": mime})
     ET.indent(distribution)
@@ -122,7 +124,6 @@ def create_installer(stage, workspace, version, installer_identity):
 
     resources = workspace / "resources"
     shutil.copytree(ROOT / "assets/installer", resources)
-    shutil.copyfile(ROOT / "LICENSE", resources / "license.txt")
     product = workspace / f"MConnect-{version}-macos-universal.pkg"
     command = ["productbuild", "--distribution", distribution_path, "--resources", resources,
                "--package-path", workspace]

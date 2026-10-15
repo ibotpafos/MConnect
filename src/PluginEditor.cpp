@@ -105,6 +105,7 @@ void MConnectAudioProcessorEditor::timerCallback()
     {
         label = "Update " + status.release->version + " available  ·  Download";
         if (status.error.isNotEmpty()) label = "Update " + status.release->version + "  ·  Retry download";
+        if (status.error.contains("disk space")) label = "Free disk space  ·  Retry update";
     }
     if (status.phase == updates::Phase::downloading)
         label = installWhenReady ? "Preparing installer..." : "Downloading update... " + juce::String(status.percent) + "%";

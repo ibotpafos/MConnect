@@ -31,7 +31,7 @@ Start/Stop, Copy link и строка обновлений. Сеть, свобо
 
 ## Установка на macOS
 
-Откройте `dist/MConnect-0.1.3-macos-universal.pkg` двойным щелчком и пройдите
+Откройте `dist/MConnect-0.1.4-macos-universal.pkg` двойным щелчком и пройдите
 шаги обычного macOS Installer. Файл можно переслать другу целиком. Нужна macOS 11
 или новее; AU и VST3 содержат Apple Silicon и Intel. Плагины устанавливаются
 для текущего пользователя и при обновлении заменяются в тех же папках.
@@ -42,7 +42,7 @@ Start/Stop, Copy link и строка обновлений. Сеть, свобо
 потребовать разрешение. Порядок действий, пути установки и удаление:
 [docs/INSTALL.md](docs/INSTALL.md).
 
-Для ручной установки остаётся `dist/MConnect-0.1.3-macos-universal.zip`
+Для ручной установки остаётся `dist/MConnect-0.1.4-macos-universal.zip`
 с `Install.command`. Старый скрипт сохраняет предыдущие версии как `.backup-*`;
 обычный `.pkg` обновляет пакеты на месте.
 
@@ -69,7 +69,7 @@ AAX для Pro Tools требует отдельного SDK и здесь не 
 
 ```sh
 python3 scripts/package_macos.py build
-python3 tests/installer.py dist/MConnect-0.1.3-macos-universal.pkg
+python3 tests/installer.py dist/MConnect-0.1.4-macos-universal.pkg
 ```
 
 Скрипты сборки и установщика, все исходники, закреплённые версии зависимостей

@@ -31,9 +31,9 @@ juce::var releaseData(const juce::String& version = "0.1.4")
     return juce::var(object.release());
 }
 juce::String json(const juce::var& data) { return juce::JSON::toString(data); }
-void waitFor(Service& service)
+void waitFor(Service& service, double timeoutMs = 4000)
 {
-    const auto deadline = juce::Time::getMillisecondCounterHiRes() + 4000;
+    const auto deadline = juce::Time::getMillisecondCounterHiRes() + timeoutMs;
     for (;;)
     {
         const auto status = service.snapshot().phase;
@@ -65,7 +65,7 @@ struct Fixture
                 return Reply {200, body, {}};
             }
             ++downloads;
-            if (offline) return Reply {503, {}, "offline"};
+            if (offline) return Reply {503, {}, {}};
             require(request.destination.replaceWithText(corrupt ? payload.toUpperCase() : payload), "fixture write failed");
             progress(request.destination.getSize());
             return Reply {200, {}, {}};
@@ -170,8 +170,59 @@ void failedDownloadsAndRetry()
     {
         Service reopened(fixture.config(), fixture.transport());
         reopened.check(); waitFor(reopened); reopened.download(); waitFor(reopened);
-        require(reopened.snapshot().phase == Phase::ready && fixture.downloads == 4, "changed cached installer reused");
+        require(reopened.snapshot().phase == Phase::ready && fixture.downloads == 6, "changed cached installer reused");
     }
+}
+void automaticDownloadRetry()
+{
+    for (int failure : {0, 503, 404, 200, -1, -2})
+    {
+        Fixture fixture;
+        auto normal = fixture.transport();
+        std::atomic<int> attempts {0};
+        Service service(fixture.config(), [&](const Request& request, const Cancelled& cancelled, const Progress& progress)
+        {
+            if (request.destination == juce::File()) return normal(request, cancelled, progress);
+            const auto attempt = ++attempts;
+            if (failure < 0) return Reply {failure == -1 ? 0 : 408, {}, "Not enough disk space for update"};
+            if (failure == 0)
+                require((attempt == 1 && request.resumeData.isEmpty())
+                    || (attempt > 1 && request.resumeData == juce::MemoryBlock("resume", 6)), "native resume state lost between attempts");
+            if (failure == 0 && attempt == 3) return normal(request, cancelled, progress);
+            require(request.destination.replaceWithText("partial"), "partial retry fixture failed");
+            return failure == 0 ? Reply {200, {}, "Network request failed", juce::MemoryBlock("resume", 6)} : Reply {failure, {}, {}};
+        });
+        service.check(); waitFor(service);
+        service.download(); waitFor(service, 6000);
+        const auto state = service.snapshot();
+        if (failure == 0)
+            require(attempts == 3 && state.phase == Phase::ready
+                    && verifyInstaller(state.installer, *state.release), "transient failure did not recover automatically");
+        else
+            require(attempts == (failure == 503 ? 3 : 1) && state.phase == Phase::available
+                    && state.installer == juce::File(), "retry bound or integrity rejection failed");
+        if (failure < 0) require(state.error.contains("disk space"), "disk error lost its actionable message");
+    }
+    Fixture fixture;
+    auto normal = fixture.transport();
+    std::atomic<int> attempts {0};
+    auto service = std::make_unique<Service>(fixture.config(), [&](const Request& request, const Cancelled& cancelled, const Progress& progress)
+    {
+        if (request.destination == juce::File()) return normal(request, cancelled, progress);
+        ++attempts; return Reply {0, {}, "Network request failed"};
+    });
+    service->check(); waitFor(*service); service->download();
+    const auto deadline = juce::Time::getMillisecondCounterHiRes() + 1000;
+    while (attempts == 0)
+    {
+        require(juce::Time::getMillisecondCounterHiRes() < deadline, "retry cancellation did not start");
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    const auto start = juce::Time::getMillisecondCounterHiRes();
+    service.reset();
+    require(attempts == 1 && juce::Time::getMillisecondCounterHiRes() - start < 500,
+            "closing an editor waited for or restarted a retry");
 }
 void offlineAndShutdown()
 {
@@ -237,6 +288,18 @@ int main(int argc, char** argv)
     juce::ScopedJuceInitialiser_GUI init;
     try
     {
+        if (argc == 2 && juce::String(argv[1]) == "--live-current")
+        {
+            Fixture fixture;
+            auto configuration = fixture.config();
+            configuration.version = MCONNECT_VERSION;
+            Service service(configuration);
+            service.check(); waitFor(service, 20000);
+            require(service.snapshot().phase == Phase::current && !service.snapshot().release,
+                    "installed version was offered an update to itself");
+            std::cout << "PASS: live GitHub has no newer release; no self-update or downgrade offered\n";
+            return 0;
+        }
         if (argc == 4 && juce::String(argv[1]) == "--download")
         {
             const juce::File reference {juce::String(argv[3])};
@@ -293,7 +356,7 @@ int main(int argc, char** argv)
             std::cout << "PASS: native HTTPS status " << reply.status << ", cancellation and callback drain\n";
             return 0;
         }
-        versionsAndMetadata(); checkDownloadAndCache(); failedDownloadsAndRetry(); offlineAndShutdown(); corruptedCaches();
+        versionsAndMetadata(); checkDownloadAndCache(); failedDownloadsAndRetry(); automaticDownloadRetry(); offlineAndShutdown(); corruptedCaches();
     }
     catch (const std::exception& e) { std::cerr << "FAIL: " << e.what() << '\n'; return 1; }
     std::cout << "PASS: update versions, metadata trust/limits, download integrity/retry, persistent/offline cache and cancellation\n";

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.4 — 2026-10-15
+
+- Allow slower installer downloads with up to 60 seconds between chunks and a 10-minute transfer limit.
+- Automatically retry transient download failures up to twice with cancellable backoff.
+- Resume interrupted downloads when macOS provides native resume data; verify the complete file before use.
+- Keep integrity failures and permanent HTTP errors visible without repeated downloads.
+- Check free cache/temporary space before downloading and surface storage failures.
+- Remove the Installer agreement step while keeping all license files and notices.
+- Add an opt-in live editor-to-Installer test host and current-version regression checks.
+
 ## 0.1.3 — 2026-10-15
 
 - Add quiet daily update checks and manual checks in the existing plugin editor.

@@ -236,14 +236,38 @@ void Service::downloadOnWorker(const Release& release)
     juce::TemporaryFile partial(target);
     if (!verifyInstaller(target, release))
     {
-        const auto response = transport({release.url, partial.getFile(), release.size},
-            [this] { return threadShouldExit(); }, [this, size = release.size](juce::int64 bytes)
+        Reply response;
+        juce::MemoryBlock resumeData;
+        for (int attempt = 0; attempt < 3; ++attempt)
+        {
+            if (threadShouldExit()) return;
+            if (configuration.cache.getBytesFreeOnVolume() < release.size * 2 + 1024 * 1024)
+            { fail("Not enough disk space for update. Free space, then retry."); return; }
+            if (attempt > 0)
             {
-                const std::lock_guard lock(mutex);
-                state.percent = static_cast<int>(juce::jlimit<juce::int64>(0, 99, bytes * 100 / size));
-            });
+                // Thread::wait is woken by destruction: retries must never make
+                // closing the final editor wait for a backoff or another fetch.
+                wait(1000 * attempt);
+                if (threadShouldExit()) return;
+                if (!partial.getFile().deleteFile()) { fail("Could not save installer. Click to retry."); return; }
+                const std::lock_guard lock(mutex); state.percent = 0;
+            }
+            response = transport({release.url, partial.getFile(), release.size, std::move(resumeData)},
+                [this] { return threadShouldExit(); }, [this, size = release.size](juce::int64 bytes)
+                {
+                    const std::lock_guard lock(mutex);
+                    state.percent = static_cast<int>(juce::jlimit<juce::int64>(0, 99, bytes * 100 / size));
+                });
+            if (threadShouldExit()) return;
+            resumeData = std::move(response.resumeData);
+            const bool transient = response.error == "Network request failed"
+                || (response.error.isEmpty() && (response.status == 408
+                    || (response.status >= 500 && response.status <= 599)));
+            if (!transient) break;
+        }
         if (threadShouldExit()) return;
-        if (response.status != 200 || response.error.isNotEmpty()) { fail("Download failed. Click to retry."); return; }
+        if (response.status != 200 || response.error.isNotEmpty())
+        { fail(response.error.isNotEmpty() ? response.error + ". Click to retry." : "Download failed. Click to retry."); return; }
         if (!verifyInstaller(partial.getFile(), release)) { fail("Installer verification failed. Click to retry."); return; }
         if (!partial.overwriteTargetFileWithTemporary()) { fail("Could not save installer. Click to retry."); return; }
     }

@@ -30,11 +30,13 @@ struct Request
     juce::String url;
     juce::File destination; // Empty for bounded JSON, otherwise a private partial file.
     juce::int64 limit = maximumMetadataBytes;
+    juce::MemoryBlock resumeData {}; // Native opaque data, kept only between bounded attempts.
 };
 struct Reply
 {
     int status = 0;
     juce::String body, error;
+    juce::MemoryBlock resumeData {};
 };
 using Cancelled = std::function<bool()>;
 using Progress = std::function<void(juce::int64)>;

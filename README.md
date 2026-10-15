@@ -4,6 +4,9 @@
 [PGStream](https://github.com/Andrulius/PGStream), с интерфейсом MConnect и
 переносимой сборкой. Лицензия AGPL-3.0-only; см. NOTICE.md.
 
+[Скачать установщик для macOS](https://github.com/ibotpafos/MConnect/releases/latest)
+· [Все релизы и исходники](https://github.com/ibotpafos/MConnect/releases).
+
 ## Использование
 
 1. Установите AU или VST3 и пересканируйте плагины в DAW.

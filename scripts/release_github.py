@@ -51,6 +51,23 @@ def prepare():
     return repository, tag, files, notes
 
 
+def find_release(repository, tag):
+    # Drafts can have an untagged-* URL and return 404 from /releases/tags/.
+    # The authenticated listing includes them; use the returned numeric ID.
+    page = 1
+    while True:
+        releases = json.loads(run("gh", "api",
+            f"repos/{repository}/releases?per_page=100&page={page}", capture=True).stdout)
+        matches = [release for release in releases if release.get("tag_name") == tag]
+        if len(matches) > 1:
+            raise SystemExit("Multiple releases use this tag; resolve the drafts before publishing.")
+        if matches:
+            return matches[0]
+        if len(releases) < 100:
+            return None
+        page += 1
+
+
 def publish(repository, tag, files, notes, create_repository, public):
     if run("git", "status", "--porcelain", capture=True).stdout.strip():
         raise SystemExit("Commit the reviewed sources before upload.")
@@ -78,16 +95,23 @@ def publish(repository, tag, files, notes, create_repository, public):
     elif old_tag.stdout.strip() != current:
         raise SystemExit("Release tag already points to different source; never move a published tag.")
     run("git", "push", "--atomic", "origin", "HEAD:refs/heads/main", f"refs/tags/{tag}")
-    release = run("gh", "api", f"repos/{repository}/releases/tags/{tag}", capture=True, check=False)
-    if release.returncode:
+    release = find_release(repository, tag)
+    if release is None:
         with tempfile.NamedTemporaryFile("w", suffix=".md") as note_file:
             note_file.write(notes)
             note_file.flush()
             run("gh", "release", "create", tag, *(str(path) for path in files), "--repo", repository,
                 "--verify-tag", "--draft", "--title", f"MConnect {tag[1:]}", "--notes-file", note_file.name)
-    elif not json.loads(release.stdout).get("draft"):
+        release = find_release(repository, tag)
+        if release is None:
+            raise SystemExit("Draft is not visible yet. Retry after GitHub finishes creating it.")
+    elif not release.get("draft"):
         raise SystemExit("This release is already published; assets must remain immutable.")
-    assets = json.loads(run("gh", "api", f"repos/{repository}/releases/tags/{tag}", capture=True).stdout)["assets"]
+    release_id = release["id"]
+    verified = json.loads(run("gh", "api", f"repos/{repository}/releases/{release_id}", capture=True).stdout)
+    if verified.get("tag_name") != tag or not verified.get("draft"):
+        raise SystemExit("Draft identity or publication state changed; nothing was published.")
+    assets = verified["assets"]
     by_name = {asset["name"]: asset for asset in assets}
     for path in files:
         digest = "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
@@ -95,7 +119,8 @@ def publish(repository, tag, files, notes, create_repository, public):
         if asset.get("digest") != digest or asset.get("size") != path.stat().st_size:
             raise SystemExit(f"GitHub asset is missing or differs: {path.name}. Draft kept unpublished.")
     if public:
-        run("gh", "release", "edit", tag, "--repo", repository, "--draft=false", "--latest")
+        run("gh", "api", "--method", "PATCH", f"repos/{repository}/releases/{release_id}",
+            "--field", "draft=false", "--raw-field", "make_latest=true")
         print(f"Published: https://github.com/{repository}/releases/tag/{tag}")
     else:
         print("Verified draft uploaded; publish it when ready.")

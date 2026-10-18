@@ -177,6 +177,21 @@ if(MCONNECT_BUILD_TESTS)
     target_link_libraries(MConnectHarness PRIVATE MConnect)
     target_compile_definitions(MConnectHarness PRIVATE JucePlugin_Build_Standalone=1 JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP=1)
     if(APPLE)
+        # This host loads the installed binary, without linking MConnect's
+        # processor or opening an audio device/DAW. Vision reads its real QR.
+        juce_add_gui_app(MConnectInstalledHarness PRODUCT_NAME "MConnect installed test host"
+            BUNDLE_ID "audio.mconnect.installed-test-host"
+            PLUGINHOST_AU TRUE
+            LOCAL_NETWORK_PERMISSION_ENABLED TRUE
+            LOCAL_NETWORK_PERMISSION_TEXT "Validate the installed MConnect plugin with a phone.")
+        target_sources(MConnectInstalledHarness PRIVATE tests/InstalledHarness.mm)
+        # Prevent JUCE implementation symbols in the host from interposing
+        # identically named implementation symbols in the loaded plugin.
+        set_target_properties(MConnectInstalledHarness PROPERTIES
+            EXCLUDE_FROM_ALL TRUE CXX_VISIBILITY_PRESET hidden OBJCXX_VISIBILITY_PRESET hidden VISIBILITY_INLINES_HIDDEN TRUE)
+        target_link_libraries(MConnectInstalledHarness PRIVATE juce::juce_audio_processors "-framework Vision")
+        target_compile_definitions(MConnectInstalledHarness PRIVATE
+            JUCE_PLUGINHOST_VST3=1 JUCE_PLUGINHOST_AU=1 JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
         add_library(MConnectBrowserTiming SHARED tests/MacosBrowserTiming.mm)
         target_link_libraries(MConnectBrowserTiming PRIVATE "-framework Foundation")
         add_custom_command(TARGET MConnectBrowserTiming POST_BUILD

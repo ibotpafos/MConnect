@@ -89,6 +89,8 @@ python3 tests/installer.py dist/MConnect-0.1.5-macos-universal.pkg
 
 Спецификация: [docs/SPEC.md](docs/SPEC.md). Исследование: [docs/RESEARCH.md](docs/RESEARCH.md).
 Проверки и ограничения: [docs/VALIDATION.md](docs/VALIDATION.md).
+Установленная 0.1.5, iPhone и повторяемые проверки без DAW:
+[docs/VALIDATION_INSTALLED_0.1.5.md](docs/VALIDATION_INSTALLED_0.1.5.md).
 Разбор аналога: [docs/MIX_TO_MOBILE.md](docs/MIX_TO_MOBILE.md).
 Оптимизация и исправления 0.1.1: [docs/OPTIMIZATION.md](docs/OPTIMIZATION.md).
 Исправления состояния и потоков 0.1.2: [docs/STABILITY.md](docs/STABILITY.md).

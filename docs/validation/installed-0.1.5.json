@@ -1,0 +1,393 @@
+{
+  "result": "PASS",
+  "completedAt": "2026-10-18T21:05:17.048459+00:00",
+  "installed": {
+    "AU": {
+      "path": "~/Library/Audio/Plug-Ins/Components/MConnect.component",
+      "version": "0.1.5",
+      "sha256": "094e45e2798da61a9cf6b762664016fb47ca32f7c210ea07a5cb10cb725fa439"
+    },
+    "VST3": {
+      "path": "~/Library/Audio/Plug-Ins/VST3/MConnect.vst3",
+      "version": "0.1.5",
+      "sha256": "58083c19e16bb6a228b5ab8644e390e49a094a23e759629f7c7eed35e8b1d006"
+    }
+  },
+  "installedBinariesUnchanged": true,
+  "strictAdHocSignaturesValid": true,
+  "installedPluginval": {
+    "result": "PASS",
+    "strictness": 5,
+    "sampleRates": [
+      48000
+    ],
+    "blockSizes": [
+      256
+    ]
+  },
+  "receivers": {
+    "vst3-chromium": {
+      "result": "PASS",
+      "version": "0.1.5",
+      "engine": "chromium",
+      "inputSampleRate": 48000,
+      "blockFrames": 256,
+      "decoded": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17664971488525247,
+            "tone997": 0.24978247195774572,
+            "tone1499": 0.0034277320368078885,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.1771542272054328,
+            "tone997": 0.003777566640921816,
+            "tone1499": 0.2505475604947208,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 5.509333333333333
+      },
+      "afterRecovery": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17662457012318655,
+            "tone997": 0.2498842319466603,
+            "tone1499": 0.004301828600771933,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.1777267210421775,
+            "tone997": 0.004371203651959538,
+            "tone1499": 0.25142513709187525,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 8.112
+      },
+      "afterLongOutage": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17672485826283535,
+            "tone997": 0.24990618207952955,
+            "tone1499": 0.00357319294763603,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.1776135747617332,
+            "tone997": 0.0038304191699485607,
+            "tone1499": 0.2511956854774411,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 20.688
+      },
+      "selectedIce": {
+        "candidateType": "host",
+        "protocol": "udp",
+        "addressMatchesQrLanAddress": true
+      },
+      "packets": 1335,
+      "stereoPackets": 781,
+      "reconnects": 3,
+      "automaticRecovery": true,
+      "pairingRejection": true,
+      "autoplayFallback": true
+    },
+    "vst3-webkit": {
+      "result": "PASS",
+      "version": "0.1.5",
+      "engine": "webkit",
+      "inputSampleRate": 48000,
+      "blockFrames": 256,
+      "decoded": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.1765131430993925,
+            "tone997": 0.24952623892782072,
+            "tone1499": 0.0029218084300775497,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17732673695510265,
+            "tone997": 0.003227703346954041,
+            "tone1499": 0.2507275338613803,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 5.56
+      },
+      "afterRecovery": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17694697435185863,
+            "tone997": 0.2503455206735402,
+            "tone1499": 0.004316729562704898,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17731999025268197,
+            "tone997": 0.003643179183046015,
+            "tone1499": 0.25076173282435144,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 8.256
+      },
+      "afterLongOutage": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17721783603518892,
+            "tone997": 0.25070728136495374,
+            "tone1499": 0.004202101883598684,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17751796484029136,
+            "tone997": 0.0038216208141094135,
+            "tone1499": 0.2510550069178424,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 20.957333333333334
+      },
+      "selectedIce": {
+        "candidateType": "host",
+        "protocol": "udp"
+      },
+      "packets": 3167,
+      "stereoPackets": 2262,
+      "reconnects": 3,
+      "automaticRecovery": true,
+      "pairingRejection": true,
+      "autoplayFallback": true
+    },
+    "au-chromium": {
+      "result": "PASS",
+      "version": "0.1.5",
+      "engine": "chromium",
+      "inputSampleRate": 48000,
+      "blockFrames": 256,
+      "decoded": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17699597787971671,
+            "tone997": 0.2503385464113289,
+            "tone1499": 0.003901981227856336,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17763530142332062,
+            "tone997": 0.004320693765021584,
+            "tone1499": 0.25129110371151886,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 5.52
+      },
+      "afterRecovery": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.1770037450131364,
+            "tone997": 0.25028901284671,
+            "tone1499": 0.0034762073150009266,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.1775916858473961,
+            "tone997": 0.0032445636245526013,
+            "tone1499": 0.25111116482671675,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 8.128
+      },
+      "afterLongOutage": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17689987902771556,
+            "tone997": 0.25018725723452706,
+            "tone1499": 0.0037398979516737887,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17720489414048074,
+            "tone997": 0.0028831836840673107,
+            "tone1499": 0.25052313378978497,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 20.688
+      },
+      "selectedIce": {
+        "candidateType": "host",
+        "protocol": "udp",
+        "addressMatchesQrLanAddress": true
+      },
+      "packets": 556,
+      "stereoPackets": 556,
+      "reconnects": 3,
+      "automaticRecovery": true,
+      "pairingRejection": true,
+      "autoplayFallback": true
+    },
+    "au-webkit": {
+      "result": "PASS",
+      "version": "0.1.5",
+      "engine": "webkit",
+      "inputSampleRate": 48000,
+      "blockFrames": 256,
+      "decoded": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17716813084238892,
+            "tone997": 0.2505010402352122,
+            "tone1499": 0.0033431109572098785,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.177867403877674,
+            "tone997": 0.0044117718057143495,
+            "tone1499": 0.2516226137380174,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 5.525333333333333
+      },
+      "afterRecovery": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17671995077148037,
+            "tone997": 0.24999778772682066,
+            "tone1499": 0.004162386272027967,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.1771626344432974,
+            "tone997": 0.0028734329940490544,
+            "tone1499": 0.25046229287095195,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 8.234666666666667
+      },
+      "afterLongOutage": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17675900422869809,
+            "tone997": 0.250076224204651,
+            "tone1499": 0.004290982686990619,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17771075233023673,
+            "tone997": 0.00409965913097244,
+            "tone1499": 0.25136446841914845,
+            "peakHz": 1500
+          }
+        ],
+        "contextState": "running",
+        "elapsed": 21.008
+      },
+      "selectedIce": {
+        "candidateType": "host",
+        "protocol": "udp"
+      },
+      "packets": 553,
+      "stereoPackets": 553,
+      "reconnects": 3,
+      "automaticRecovery": true,
+      "pairingRejection": true,
+      "autoplayFallback": true
+    }
+  },
+  "robustness": {
+    "result": "PASS",
+    "decodedAudioChecked": true,
+    "fourReceivers": true,
+    "fifthRecoversWhenSlotFreed": true,
+    "bufferRespondsToLowJitterLoss": true,
+    "bufferRespondsToConcealment": true,
+    "bufferFallsAfterRecovery": true,
+    "pageCacheRestore": true,
+    "stalePauseIgnored": true,
+    "longOutageRecovery": true,
+    "liveRateChanges": [
+      192000,
+      44100,
+      48000
+    ],
+    "largeBlockFrames": 2048,
+    "idleSilence": true,
+    "activeShutdown": true
+  },
+  "physicalIPhone": {
+    "timestamp": "2026-10-18T21:01:59.190298+00:00",
+    "device": "physical iPhone, user supplied",
+    "initialAudio": "User confirmed test signal audible",
+    "outage": "iPhone Wi-Fi off for 8-10 seconds, then on, same Safari page",
+    "recovery": "User confirmed audio resumed automatically without tapping Listen or reloading",
+    "testSignalPeak": 0.04,
+    "format": "installed VST3",
+    "pluginVersion": "0.1.5",
+    "loadedBinary": "~/Library/Audio/Plug-Ins/VST3/MConnect.vst3/Contents/MacOS/MConnect",
+    "senderStatsAfterUserConfirmation": {
+      "name": "MConnect",
+      "version": "0.1.5",
+      "sampleRate": 48000,
+      "bitrate": 320000,
+      "listeners": 1,
+      "frameMs": 10,
+      "senderQueueMs": 0.0,
+      "sourceBlockMs": 5.333333333333333,
+      "bufferMs": 30,
+      "packetsSent": 4391,
+      "droppedFrames": 0,
+      "stereoPackets": 4002,
+      "workerWakeups": 31144,
+      "backlogDiscardedFrames": 0,
+      "conversionErrors": 0,
+      "encodeErrors": 0,
+      "connectionState": "connected",
+      "iceState": "completed",
+      "peakL": 0.028259445584519,
+      "peakR": 0.02829254299323
+    }
+  },
+  "scope": "Installed AU/VST3 0.1.5, Apple Silicon; software tone host without an audio device. No DAW launched or controlled.",
+  "artifacts": "output/installed-stream-0.1.5/",
+  "toolVersions": {
+    "playwright": "1.62.1",
+    "pluginval": "1.0.4"
+  },
+  "publicationNotes": {
+    "localUserPaths": "Replaced with ~/Library/ paths",
+    "privateLanAddress": "Replaced with addressMatchesQrLanAddress where the original test asserted equality",
+    "pairingKeysAndQrCodes": "Not included",
+    "originalReport": "output/installed-stream-0.1.5/verification.json (local, ignored by Git)"
+  }
+}

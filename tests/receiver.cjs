@@ -73,7 +73,7 @@ const {chromium, webkit, firefox} = require(process.env.MCONNECT_PLAYWRIGHT || "
     await page.waitForFunction(() => !document.querySelector("#audio").paused && document.querySelector("#listen").hidden,{},{timeout:20000});
     await page.waitForFunction(() => window.testAudio?.ctx.state === "running",{},{timeout:20000});
     await page.waitForTimeout(5000);
-    const measurement = await page.evaluate(async () => {
+    const measureAudio = () => page.evaluate(async () => {
       const {ctx,analysers} = window.testAudio;
       // Automatic recovery may replace the track during the warm-up. Keep the
       // verification graph attached to the same stream as the shipped player.
@@ -96,8 +96,15 @@ const {chromium, webkit, firefox} = require(process.env.MCONNECT_PLAYWRIGHT || "
         return {rms:Math.sqrt(data.reduce((a,b)=>a+b*b,0)/data.length),tone997:magnitude(data,997),tone1499:magnitude(data,1499),peakHz:peak*ctx.sampleRate/analyser.fftSize};
       });
       const contextState = ctx.state, elapsed = ctx.currentTime;
-      await ctx.close(); return {sampleRate:ctx.sampleRate,channels,contextState,elapsed};
+      return {sampleRate:ctx.sampleRate,channels,contextState,elapsed};
     });
+    const measurement = await measureAudio();
+    const assertStereo = (value, stage) => {
+      assert.ok(value.channels[0].tone997 > .12, stage + ": left tone missing");
+      assert.ok(value.channels[1].tone1499 > .12, stage + ": right tone missing");
+      assert.ok(value.channels[0].tone1499 < .02 && value.channels[1].tone997 < .02,
+        stage + ": received stereo collapsed or mixed");
+    };
     response = await context.request.get(base + "/info",{headers:{"X-MConnect-Token":token}});
     const stats = await response.json();
     if (measurement.channels[0].tone997 <= .12 || measurement.channels[1].tone1499 <= .12) {
@@ -108,15 +115,52 @@ const {chromium, webkit, firefox} = require(process.env.MCONNECT_PLAYWRIGHT || "
       });
       console.error(JSON.stringify({engine,inputSampleRate:info.sampleRate,measurement,sender:stats,receiver}));
     }
-    assert.ok(measurement.channels[0].tone997 > .12,"left tone missing");
-    assert.ok(measurement.channels[1].tone1499 > .12,"right tone missing");
-    assert.ok(measurement.channels[0].tone1499 < .02 && measurement.channels[1].tone997 < .02,"received stereo collapsed or mixed");
+    assertStereo(measurement, "initial receive");
     assert.ok(stats.packetsSent>20); assert.ok(stats.stereoPackets>20); assert.equal(stats.encodeErrors,0);
     await page.screenshot({path:path.join(output,"receiver-"+engine+"-"+info.sampleRate+".png"),fullPage:true});
     // A dropped signaling connection must restore itself without a new tap.
     const oldSocketCount = await page.evaluate(() => window.testSockets.length);
     await page.evaluate(() => window.testSockets.at(-1).close());
     await page.waitForFunction((count) => window.testSockets.length > count && !document.querySelector("audio").paused && document.querySelector("#listen").hidden,oldSocketCount,{timeout:20000});
+    await page.waitForTimeout(1500);
+    const afterRecovery = await measureAudio();
+    assertStereo(afterRecovery, "signaling recovery");
+    let afterLongOutage = null;
+    if (process.env.MCONNECT_TEST_CONTROL) {
+      const control = process.env.MCONNECT_TEST_CONTROL;
+      const command = async value => {
+        fs.writeFileSync(control + ".pending", JSON.stringify(value));
+        fs.renameSync(control + ".pending", control);
+        for (let n = 0; fs.existsSync(control); ++n) {
+          assert.ok(n < 150, "host did not acknowledge control command");
+          await page.waitForTimeout(100);
+        }
+      };
+      const beforeOutage = await page.evaluate(() => window.testSockets.length);
+      await command({stream:false});
+      await page.waitForTimeout(8000);
+      await command({stream:true});
+      await page.waitForFunction(count => window.testSockets.length > count &&
+        !document.querySelector("audio").paused && document.querySelector("#listen").hidden,
+        beforeOutage,{timeout:30000});
+      await page.waitForTimeout(3000);
+      afterLongOutage = await measureAudio();
+      assertStereo(afterLongOutage, "eight-second server outage recovery");
+    }
+    const selectedIce = await page.evaluate(async () => {
+      const reports = await window.testPeer.getStats();
+      let pair;
+      reports.forEach(value => {
+        if (value.type === "transport" && value.selectedCandidatePairId)
+          pair = reports.get(value.selectedCandidatePairId);
+      });
+      if (!pair) reports.forEach(value => {
+        if (value.type === "candidate-pair" && value.state === "succeeded" && value.nominated) pair = value;
+      });
+      const remote = pair && reports.get(pair.remoteCandidateId);
+      return remote ? {address:remote.address || remote.ip,candidateType:remote.candidateType,protocol:remote.protocol} : null;
+    });
+    if (selectedIce?.address) assert.equal(selectedIce.address,new URL(info.url).hostname,"media did not use the advertised LAN address");
     for(let iteration=0;iteration<3;iteration++) {
       await page.locator("#stop").click();
       await page.locator("#listen").click();
@@ -124,7 +168,8 @@ const {chromium, webkit, firefox} = require(process.env.MCONNECT_PLAYWRIGHT || "
       await page.waitForTimeout(200);
     }
     await page.locator("#stop").click();
+    await page.evaluate(() => window.testAudio.ctx.close());
     assert.deepEqual(errors,[],"browser runtime errors");
-    console.log(JSON.stringify({result:"PASS",version:stats.version,engine,inputSampleRate:info.sampleRate,blockFrames:info.blockFrames || 256,decoded:measurement,packets:stats.packetsSent,stereoPackets:stats.stereoPackets,reconnects:3,automaticRecovery:true,pairingRejection:true,autoplayFallback:true}));
+    console.log(JSON.stringify({result:"PASS",version:stats.version,engine,inputSampleRate:info.sampleRate,blockFrames:info.blockFrames || 256,decoded:measurement,afterRecovery,afterLongOutage,selectedIce,packets:stats.packetsSent,stereoPackets:stats.stereoPackets,reconnects:3,automaticRecovery:true,pairingRejection:true,autoplayFallback:true}));
   } finally { if(context) await context.close(); await browser.close(); }
 })().catch(e => { console.error("FAIL:",e.message); process.exitCode=1; });

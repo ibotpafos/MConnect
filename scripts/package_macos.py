@@ -42,6 +42,13 @@ def stage_plugins(build, stage, application_identity):
         architectures = subprocess.check_output(["lipo", "-archs", str(executable)], text=True).split()
         if set(architectures) != {"arm64", "x86_64"}:
             raise SystemExit(f"Expected universal arm64 + x86_64 binary: {executable}")
+        minimums = re.findall(r"^\s*minos\s+([\d.]+)\s*$", subprocess.check_output(
+            ["vtool", "-show-build", str(executable)], text=True), re.MULTILINE)
+        if len(minimums) != len(architectures) or any(
+            tuple(map(int, (value.split(".") + ["0", "0"])[:3])) > (11, 0, 0)
+            for value in minimums
+        ):
+            raise SystemExit(f"Binary requires macOS newer than the installer's macOS 11 minimum: {executable}")
         if (build / "generated/source.zip").read_bytes() not in executable.read_bytes():
             raise SystemExit(f"Embedded source is stale in {executable}; rebuild this format.")
         if any(path.suffix in (".app", ".dylib") for path in source.rglob("*")):

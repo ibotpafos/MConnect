@@ -1,4 +1,4 @@
-# MConnect 0.1.1 specification
+# MConnect 0.1.5 specification
 
 ## User outcome
 
@@ -20,8 +20,8 @@ is needed after installation.
 - DAW sample rates 32–192 kHz are converted on the worker to 48 kHz stereo Opus.
 - Fixed 320 kbps stereo Opus, 10 ms frames. Opus is lossy.
 - Up to four receivers; multiple instances get distinct ports and pairing links.
-- A 420 × 510 editor: QR, connection status, small stereo meters, start/stop and
-  copy link. No manual network, codec, quality or buffer configuration.
+- A 420 × 540 editor: QR, connection status, small stereo meters, start/stop and
+  copy link and a read-only version label. No manual network, codec, quality or buffer configuration.
 - Automatic LAN address selection, free port selection, resampling, preconnection,
   playback readiness, temporary connection recovery and receiver buffer hints.
 - Browser-only receiver; no separate mobile or desktop application in delivery.
@@ -72,6 +72,16 @@ concealment using interval statistics when the browser supports the API. Hints a
 end-to-end latency and the browser can impose a larger buffer.
 Signaling rejects malformed, oversized, fragmented, binary and deeply nested
 JSON messages. Concurrent offers cannot exceed four native peers.
+
+## Update ownership
+
+GD Connect owns release discovery, downloads and installation. The plugin has
+no update service, release polling, download transport or Installer handoff.
+The manager remains optional for audio streaming; manual PKG/ZIP installation
+is supported. Keep the AU/VST3 bundle ID `audio.mconnect.plugin`, plugin codes,
+version metadata and universal ZIP release contract stable. Close the DAW before
+replacing installed bundles. Earlier 0.1.3/0.1.4 clients can discover the transition
+release through its PKG asset.
 
 ## Delivery plan and acceptance
 

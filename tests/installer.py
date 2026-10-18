@@ -3,6 +3,7 @@
 import argparse
 from pathlib import Path
 import plistlib
+import re
 import subprocess
 import tempfile
 import uuid
@@ -74,6 +75,10 @@ def verify(package, install=False):
             require(binary.stat().st_mode & 0o111, f"Missing executable permissions: {binary}")
             require(set(output("lipo", "-archs", binary).split()) == {"arm64", "x86_64"},
                     f"Missing architecture: {binary}")
+            minimums = re.findall(r"^\s*minos\s+([\d.]+)\s*$", output("vtool", "-show-build", binary), re.MULTILINE)
+            require(len(minimums) == 2 and all(
+                tuple(map(int, (value.split(".") + ["0", "0"])[:3])) <= (11, 0, 0)
+                for value in minimums), f"Binary exceeds the installer's macOS 11 minimum: {binary}")
             output("codesign", "--verify", "--deep", "--strict", bundle)
         require(len(versions) == 1 and versions == package_versions, "Package and plugin versions differ")
         version = versions.pop()

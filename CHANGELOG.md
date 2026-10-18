@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.5 — 2026-10-18
+
+- Centralize plugin updates in GD Connect; remove in-plugin checks, downloads and Installer prompts.
+- Keep a read-only version label in the existing editor and remove the unused update transport and JUCE cryptography module.
+- Preserve bundle identifiers, universal ZIP metadata and manual PKG installation for manager compatibility and older clients.
+- Keep the editor lifecycle regression independent of the removed updater suite.
+- Restore the macOS 11 deployment target when CMake has an empty cache entry; reject packages whose binaries require a newer OS.
+
 ## 0.1.4 — 2026-10-15
 
 - Allow slower installer downloads with up to 60 seconds between chunks and a 10-minute transfer limit.

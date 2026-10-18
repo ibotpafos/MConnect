@@ -7,7 +7,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 // profile verifies concurrent lifecycle/race safety; release and ASan profiles
 // retain the decoded stereo checks without changing their thresholds.
 const raceOnly=process.env.MCONNECT_TEST_RACE_ONLY==='1';
-const temp=fs.mkdtempSync('/private/tmp/mconnect-robust-'),infoPath=path.join(temp,'info.json'),control=path.join(temp,'control.json');
+const temp=fs.mkdtempSync(path.join(require('node:os').tmpdir(),'mconnect-robust-')),infoPath=path.join(temp,'info.json'),control=path.join(temp,'control.json');
 const host=process.env.MCONNECT_TEST_HOST || path.resolve('build/MConnectHarness_artefacts/Release/MConnect test host.app/Contents/MacOS/MConnect test host');
 const hostLog=process.env.MCONNECT_TEST_HOST_LOG?fs.openSync(process.env.MCONNECT_TEST_HOST_LOG,'w'):null;
 const source=spawn(host,['--no-editor','--seconds','180','--block','1024','--info',infoPath,'--control',control],{stdio:['ignore',hostLog??'ignore',hostLog??'ignore']});

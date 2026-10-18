@@ -2,7 +2,7 @@
 
 ## Установщик
 
-Файл `MConnect-0.1.4-macos-universal.pkg` можно переслать целиком. Он содержит
+Файл `MConnect-0.1.5-macos-universal.pkg` можно переслать целиком. Он содержит
 AU и VST3 для Apple Silicon и Intel; минимальная версия системы — macOS 11.
 На телефоне используется браузер: Safari на iOS или Chrome на Android.
 
@@ -24,6 +24,13 @@ AU и VST3 для Apple Silicon и Intel; минимальная версия с
 которая новее установщика, защищена от перезаписи. Плагины, установленные
 старым `Install.command`, обновляются в тех же местах; уже существующие
 `.backup-*` остаются на диске. Перезагрузка Mac не нужна.
+
+## Установка через GD Connect
+
+Выберите MConnect в менеджере и установите доступную версию. Менеджер
+использует universal ZIP из GitHub Releases, проверяет SHA-256 и устанавливает
+AU/VST3 в пользовательские папки плагинов. Перед обновлением закройте DAW.
+Для передачи звука менеджер запускать не требуется.
 
 ## Если macOS блокирует файл
 
@@ -52,7 +59,7 @@ Developer ID Application для плагинов, Developer ID Installer для 
 
 ```sh
 python3 scripts/package_macos.py build
-python3 tests/installer.py dist/MConnect-0.1.4-macos-universal.pkg
+python3 tests/installer.py dist/MConnect-0.1.5-macos-universal.pkg
 ```
 
 Для проверки реальной установки и повторного обновления на своём Mac добавьте

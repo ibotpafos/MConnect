@@ -20,7 +20,7 @@ def run(*args, capture=False, check=True):
 def prepare():
     cmake = (ROOT / "CMakeLists.txt").read_text()
     version = re.search(r"project\(MConnect VERSION ([\d.]+)", cmake).group(1)
-    repository = re.search(r'set\(MCONNECT_UPDATE_REPOSITORY "([\w./-]+)"', cmake).group(1)
+    repository = re.search(r'set\(MCONNECT_RELEASE_REPOSITORY "([\w./-]+)"', cmake).group(1)
     base = f"MConnect-{version}-macos-universal"
     files = [ROOT / "dist" / f"{base}{extension}" for extension in (".pkg", ".zip", ".sha256")]
     files.append(ROOT / "dist" / f"MConnect-{version}-source.zip")
@@ -77,7 +77,7 @@ def publish(repository, tag, files, notes, create_repository, public):
     allowed = (f"https://github.com/{repository}", f"https://github.com/{repository}.git",
                f"git@github.com:{repository}.git")
     if configured.returncode == 0 and configured.stdout.strip() not in allowed:
-        raise SystemExit("Existing origin does not match the compiled update repository.")
+        raise SystemExit("Existing origin does not match the release repository.")
     existing = run("gh", "api", f"repos/{repository}", capture=True, check=False)
     if existing.returncode:
         if not create_repository or "404" not in existing.stderr:
@@ -85,7 +85,7 @@ def publish(repository, tag, files, notes, create_repository, public):
         run("gh", "repo", "create", repository, "--public", "--description",
             "Lightweight AU/VST3 plugin: listen to your DAW on a phone browser over local Wi-Fi.")
     elif json.loads(existing.stdout).get("private"):
-        raise SystemExit("Update checks require public releases; this repository is private.")
+        raise SystemExit("GD Connect requires public releases; this repository is private.")
     if configured.returncode:
         run("git", "remote", "add", "origin", f"https://github.com/{repository}.git")
     current = run("git", "rev-parse", "HEAD", capture=True).stdout.strip()

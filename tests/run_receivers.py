@@ -3,7 +3,6 @@ import json
 import os
 from pathlib import Path
 import subprocess
-import sys
 import tempfile
 import time
 
@@ -11,7 +10,7 @@ root = Path(__file__).resolve().parent.parent
 host = root / "build/MConnectHarness_artefacts/Release/MConnect test host.app/Contents/MacOS/MConnect test host"
 results = []
 for rate, engine, block in [(48000,"chromium",256),(48000,"webkit",256),(44100,"chromium",256),(96000,"chromium",256),(192000,"chromium",256),(48000,"chromium",1024),(48000,"chromium",2048)]:
-    with tempfile.TemporaryDirectory(prefix="mconnect-receiver-",dir="/private/tmp" if sys.platform == "darwin" else None) as temporary:
+    with tempfile.TemporaryDirectory(prefix="mconnect-receiver-") as temporary:
         info = Path(temporary) / "info.json"
         process = subprocess.Popen([str(host),"--no-editor","--rate",str(rate),"--block",str(block),"--seconds","120","--info",str(info)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         try:

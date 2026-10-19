@@ -1,6 +1,7 @@
 #pragma once
 #include "PluginProcessor.h"
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <gdkit/LookAndFeel.h>
 namespace mconnect
 {
 class MConnectAudioProcessorEditor final : public juce::AudioProcessorEditor, private juce::Timer
@@ -13,9 +14,10 @@ public:
 private:
     void timerCallback() override;
     MConnectAudioProcessor& owner;
-    juce::LookAndFeel_V4 look;
+    gdkit::LookAndFeel look {gdkit::Product::mconnect};
     juce::TextButton stream {"Stop"}, copy {"Copy link"};
     juce::Label version;
+    juce::TooltipWindow tooltips {this, 600};
     juce::Image qr;
     juce::String pairingUrl, currentStatus;
     bool running = false;

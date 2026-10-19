@@ -6,6 +6,7 @@
 #include <rtc/rtc.hpp>
 #include <mbedtls/aes.h>
 #include <algorithm>
+#include <array>
 #include <chrono>
 #include <cmath>
 #include <cstring>
@@ -25,6 +26,8 @@ constexpr int defaultOpusPayloadType = 111;
 constexpr int maxRtpPayloadType = 127;
 constexpr int defaultOpusComplexity = 5;
 constexpr int fallbackOpusComplexity = 3;
+constexpr size_t maximumOpusPacketBytes = 4096;
+constexpr size_t maximumStartupPackets = 60; // 600 ms at the fixed 10 ms frame size.
 constexpr double encodeBudgetRatio = 0.10;
 constexpr size_t pcmChannels = 2;
 constexpr size_t defaultPcmPacketFrames = 480;
@@ -218,27 +221,43 @@ struct OfferAudioInfo
 {
     juce::String mid { "audio" };
     int opusPayloadType = defaultOpusPayloadType;
+    bool nack = false;
+    juce::String sdp;
 };
 
 OfferAudioInfo parseOfferAudioInfo(const juce::String& sdp)
 {
     OfferAudioInfo result;
     auto inAudioSection = false;
+    juce::StringArray feedback;
 
     juce::StringArray lines;
     lines.addLines(sdp);
+    int audioStart = -1, audioEnd = lines.size();
 
-    for (auto line : lines)
+    for (int index = 0; index < lines.size(); ++index)
     {
-        line = line.trimCharactersAtEnd("\r").trim();
+        const auto line = lines[index].trimCharactersAtEnd("\r").trim();
         if (line.startsWith("m="))
         {
+            // We send one audio track. Keep feedback scoped to that section;
+            // a video's NACK capability says nothing about Opus support.
+            if (inAudioSection)
+            {
+                audioEnd = index;
+                break;
+            }
             inAudioSection = line.startsWith("m=audio ");
+            if (inAudioSection)
+                audioStart = index;
             continue;
         }
 
         if (! inAudioSection)
             continue;
+
+        if (line.startsWith("a=rtcp-fb:"))
+            feedback.add(line.fromFirstOccurrenceOf("a=rtcp-fb:", false, false).trim());
 
         if (line.startsWith("a=mid:"))
         {
@@ -259,12 +278,41 @@ OfferAudioInfo parseOfferAudioInfo(const juce::String& sdp)
         }
     }
 
+    // Feedback can precede rtpmap. Resolve the selected payload first, and
+    // accept generic NACK only ("nack pli" is a different feedback message).
+    for (const auto& entry : feedback)
+    {
+        const auto fields = juce::StringArray::fromTokens(entry, " \t", "");
+        if (fields.size() == 2 && fields[1] == "nack"
+            && (fields[0] == "*" || fields[0] == juce::String(result.opusPayloadType)))
+            result.nack = true;
+    }
+
+    // libdatachannel's parser expects numeric rtcp-fb payloads. Expand the
+    // valid wildcard form for our selected audio codec before passing it on.
+    for (int index = audioStart + 1; audioStart >= 0 && index < audioEnd; ++index)
+        if (lines[index].startsWith("a=rtcp-fb:* "))
+            lines.set(index, "a=rtcp-fb:" + juce::String(result.opusPayloadType) + " "
+                             + lines[index].substring(12));
+    result.sdp = lines.joinIntoString("\r\n");
+
     return result;
 }
 }
 
 struct WebRtcAudioSender::Peer
 {
+    struct BufferedPacket
+    {
+        std::array<uint8_t, maximumOpusPacketBytes> data;
+        size_t bytes = 0;
+        uint64_t sample = 0;
+    };
+    // Network-worker storage only. Seed the receiver with a real encoded
+    // reserve: a delay hint alone cannot fill NetEq on an already bad link.
+    std::array<BufferedPacket, maximumStartupPackets> startup;
+    size_t startupCount = 0, startupTarget = 0;
+    bool startupComplete = false;
     mg_connection* connection = nullptr;
     std::mutex signalingMutex;
     std::shared_ptr<rtc::PeerConnection> pc;
@@ -298,7 +346,7 @@ WebRtcAudioSender::WebRtcAudioSender(std::shared_ptr<juce::WaitableEvent> activi
         static_cast<void>(mbedtls_aes_setkey_enc(&context, key, 128));
         mbedtls_aes_free(&context);
     });
-    opusPacket.resize(4096);
+    opusPacket.resize(maximumOpusPacketBytes);
 }
 
 WebRtcAudioSender::~WebRtcAudioSender()
@@ -579,10 +627,14 @@ void WebRtcAudioSender::handleOffer(mg_connection* connection, const juce::var& 
         else
         {
             offerAudio = parseOfferAudioInfo(sdp);
+            peer->startupTarget = offerAudio.nack ? std::min(maximumStartupPackets,
+                static_cast<size_t>((600 + peerConfig.opusFrameDurationMs() - 1) / peerConfig.opusFrameDurationMs())) : 0;
             ssrc = nextSsrc();
             const auto cname = std::string("mconnect-audio");
             auto audio = rtc::Description::Audio(toStdString(offerAudio.mid), rtc::Description::Direction::SendOnly);
             audio.addOpusCodec(offerAudio.opusPayloadType, opusFmtp(peerConfig));
+            if (offerAudio.nack)
+                audio.rtpMap(offerAudio.opusPayloadType)->addFeedback("nack");
             const auto ptime = std::to_string(peerConfig.opusFrameDurationMs());
             audio.addAttribute("ptime:" + ptime);
             audio.addAttribute("maxptime:" + ptime);
@@ -595,8 +647,12 @@ void WebRtcAudioSender::handleOffer(mg_connection* connection, const juce::var& 
             auto packetizer = std::make_shared<rtc::OpusRtpPacketizer>(peer->rtpConfig);
             auto srReporter = std::make_shared<rtc::RtcpSrReporter>(peer->rtpConfig);
             packetizer->addToChain(srReporter);
-            auto nackResponder = std::make_shared<rtc::RtcpNackResponder>();
-            packetizer->addToChain(nackResponder);
+            if (offerAudio.nack)
+            {
+                // Reuse the library's bounded cache of encoded RTP packets.
+                // Retries do not touch the DAW callback or encode audio again.
+                packetizer->addToChain(std::make_shared<rtc::RtcpNackResponder>());
+            }
             peer->track->setMediaHandler(packetizer);
             peer->track->onOpen([weakPeer, wake = activityEvent]
             {
@@ -646,7 +702,8 @@ void WebRtcAudioSender::handleOffer(mg_connection* connection, const juce::var& 
 
         closePeer(oldPeer);
 
-        peer->pc->setRemoteDescription(rtc::Description(toStdString(sdp), "offer"));
+        peer->pc->setRemoteDescription(rtc::Description(
+            toStdString(peerConfig.usesPcmDataChannel() ? sdp : offerAudio.sdp), "offer"));
         peer->pc->setLocalDescription(rtc::Description::Type::Answer);
     }
     catch (const std::exception& exception)
@@ -682,8 +739,15 @@ void WebRtcAudioSender::handleRemoteCandidate(mg_connection* connection, const j
 
 void WebRtcAudioSender::setReceiverReady(mg_connection* connection, bool ready)
 {
-    if (auto peer = findPeer(connection))
-        peer->receiverReady.store(ready, std::memory_order_release);
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        const auto it = peers.find(connection);
+        if (it != peers.end() && it->second->receiverReady.exchange(ready, std::memory_order_acq_rel) != ready)
+        {
+            it->second->startupCount = 0;
+            it->second->startupComplete = false;
+        }
+    }
     activityEvent->signal();
 }
 
@@ -1009,8 +1073,6 @@ WebRtcAudioSender::SendResult WebRtcAudioSender::sendEncodedFrameLocked(const ui
     if (data == nullptr || bytes == 0)
         return result;
 
-    auto* byteData = reinterpret_cast<const rtc::byte*> (data);
-
     for (const auto& entry : peers)
     {
         const auto& peer = entry.second;
@@ -1018,22 +1080,45 @@ WebRtcAudioSender::SendResult WebRtcAudioSender::sendEncodedFrameLocked(const ui
             || !peer->receiverReady.load(std::memory_order_acquire))
             continue;
 
-        ++result.attempted;
         try
         {
-            const auto timestamp = peer->rtpConfig->startTimestamp + static_cast<uint32_t>(frameStartSample);
-            peer->track->sendFrame(byteData, bytes, rtc::FrameInfo(timestamp));
-            sendCalls.fetch_add(1, std::memory_order_relaxed);
-            ++result.sent;
-            if (peer->rtpConfig != nullptr)
+            const auto submit = [&](const uint8_t* packet, size_t size, uint64_t sample)
             {
+                ++result.attempted;
+                const auto timestamp = peer->rtpConfig->startTimestamp + static_cast<uint32_t>(sample);
+                peer->track->sendFrame(reinterpret_cast<const rtc::byte*>(packet), size, rtc::FrameInfo(timestamp));
+                sendCalls.fetch_add(1, std::memory_order_relaxed);
+                ++result.sent;
                 currentSequenceNumber = static_cast<uint16_t> (peer->rtpConfig->sequenceNumber - 1u);
                 currentTimestamp = peer->rtpConfig->timestamp;
                 currentTimestampIncrementExpected = static_cast<uint32_t> (encoderFrameFrames);
+            };
+            if (!peer->startupComplete && peer->startupTarget > 0)
+            {
+                if (bytes > maximumOpusPacketBytes)
+                    throw std::runtime_error("Opus packet exceeds startup buffer capacity");
+                auto& packet = peer->startup[peer->startupCount++];
+                std::memcpy(packet.data.data(), data, bytes);
+                packet.bytes = bytes;
+                packet.sample = frameStartSample;
+                if (peer->startupCount < peer->startupTarget)
+                    continue;
+                for (size_t index = 0; index < peer->startupCount; ++index)
+                {
+                    const auto& queued = peer->startup[index];
+                    submit(queued.data.data(), queued.bytes, queued.sample);
+                }
+                peer->startupCount = 0;
+                peer->startupComplete = true;
             }
+            else submit(data, bytes, frameStartSample);
         }
         catch (...)
         {
+            // A track may reopen after a send failure part-way through the
+            // initial batch. Never retain a full queue/index for that retry.
+            peer->startupCount = 0;
+            peer->startupComplete = false;
             peer->open.store(false, std::memory_order_release);
             ++result.failed;
         }
@@ -1209,6 +1294,11 @@ void WebRtcAudioSender::resetAudio()
     std::lock_guard<std::mutex> lock(mutex);
     pendingFrames = 0;
     pcmPendingFrames = 0;
+    for (const auto& [connection, peer] : peers)
+    {
+        juce::ignoreUnused(connection);
+        if (!peer->startupComplete) peer->startupCount = 0;
+    }
     if (peers.empty()) encodedSampleCursor = 0;
     pcmSampleCursor = 0;
     pcmSequence = 0;
@@ -1223,6 +1313,11 @@ void WebRtcAudioSender::skipAudio(size_t skippedFrames48k)
     encodedSampleCursor += skippedFrames48k + pendingFrames;
     pendingFrames = 0;
     haveLastSubmittedTimestamp = false;
+    for (const auto& [connection, peer] : peers)
+    {
+        juce::ignoreUnused(connection);
+        if (!peer->startupComplete) peer->startupCount = 0;
+    }
 }
 
 int WebRtcAudioSender::peerCount() const

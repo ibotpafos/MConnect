@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
-project(MConnect VERSION 0.1.5 LANGUAGES C CXX)
+project(MConnect VERSION 0.1.9 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -128,13 +128,14 @@ elseif(UNIX)
     list(APPEND MCONNECT_FORMATS LV2)
 endif()
 juce_add_plugin(MConnect
-    COMPANY_NAME "MConnect"
+    COMPANY_NAME "GD Connect"
     BUNDLE_ID "audio.mconnect.plugin"
     IS_SYNTH FALSE NEEDS_MIDI_INPUT FALSE NEEDS_MIDI_OUTPUT FALSE IS_MIDI_EFFECT FALSE
     EDITOR_WANTS_KEYBOARD_FOCUS FALSE COPY_PLUGIN_AFTER_BUILD FALSE VST3_AUTO_MANIFEST TRUE
     VST3_CATEGORIES Fx Analyzer
     PLUGIN_MANUFACTURER_CODE Mcnn PLUGIN_CODE Mcnt
-    FORMATS ${MCONNECT_FORMATS} PRODUCT_NAME "MConnect"
+    FORMATS ${MCONNECT_FORMATS} PRODUCT_NAME "MConnect" PLUGIN_NAME "Link"
+    AU_EXPORT_PREFIX "MConnectAU"
     LV2URI "https://mconnect.audio/plugin"
     LOCAL_NETWORK_PERMISSION_ENABLED TRUE
     LOCAL_NETWORK_PERMISSION_TEXT "MConnect streams your DAW audio to your phone on the local network."
@@ -147,6 +148,8 @@ target_compile_definitions(MConnect PUBLIC MCONNECT_VERSION="${PROJECT_VERSION}"
 target_link_libraries(MConnect PRIVATE MConnectAssets qrcodegen civetweb_static samplerate
     Opus::opus LibDataChannel::LibDataChannelStatic MbedTLS::MbedTLS MbedTLS::X509 MbedTLS::Crypto juce::juce_audio_processors
     PUBLIC juce::juce_recommended_config_flags juce::juce_recommended_warning_flags)
+include(cmake/gdkit/GDKit.cmake)
+gdkit_link(MConnect)
 if(WIN32)
     target_compile_definitions(MConnect PUBLIC WIN32_LEAN_AND_MEAN NOMINMAX _CRT_SECURE_NO_WARNINGS)
     target_link_libraries(MConnect PRIVATE ws2_32 iphlpapi crypt32 advapi32 user32 gdi32)

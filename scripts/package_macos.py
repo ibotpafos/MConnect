@@ -31,7 +31,7 @@ def check_sources(build, workspace):
             raise SystemExit("Source archive is stale. Run cmake --build before packaging.")
 
 
-def stage_plugins(build, stage, application_identity):
+def stage_plugins(build, stage, application_identity, preserve_signatures=False):
     versions = set()
     for kind, extension in (("AU", "component"), ("VST3", "vst3")):
         source = build / "MConnect_artefacts/Release" / kind / f"MConnect.{extension}"
@@ -55,11 +55,12 @@ def stage_plugins(build, stage, application_identity):
             raise SystemExit(f"Unexpected nested executable in {source}")
         target = stage / source.name
         run("ditto", source, target)
-        sign = ["codesign", "--force", "--sign", application_identity or "-"]
-        if application_identity:
-            sign += ["--options", "runtime", "--timestamp"]
-        run(*sign, target)
-        run("codesign", "--verify", "--deep", "--strict", target)
+        if not preserve_signatures:
+            sign = ["codesign", "--force", "--sign", application_identity or "-"]
+            if application_identity:
+                sign += ["--options", "runtime", "--timestamp"]
+            run(*sign, target)
+        run("codesign", "--verify", "--all-architectures", "--deep", "--strict", target)
     if len(versions) != 1:
         raise SystemExit("AU and VST3 versions differ; rebuild both formats.")
     version = versions.pop()
@@ -145,11 +146,15 @@ def main():
     parser.add_argument("build", nargs="?", type=Path, default=ROOT / "build")
     parser.add_argument("--application-identity", help="Developer ID Application identity")
     parser.add_argument("--installer-identity", help="Developer ID Installer identity")
+    parser.add_argument("--preserve-signatures", action="store_true",
+                        help="Keep and verify existing plugin signatures, including a persistent beta certificate")
     arguments = parser.parse_args()
     if sys.platform != "darwin":
         parser.error("macOS packaging requires Apple's pkgbuild and productbuild.")
     if bool(arguments.application_identity) != bool(arguments.installer_identity):
         parser.error("Supply both Developer ID identities, or neither for a local build.")
+    if arguments.preserve_signatures and arguments.application_identity:
+        parser.error("Choose existing plugin signatures or Developer ID signing, not both.")
     build = arguments.build.resolve()
     output = ROOT / "dist"
     output.mkdir(exist_ok=True)
@@ -158,7 +163,7 @@ def main():
         check_sources(build, workspace)
         stage = workspace / "manual"
         stage.mkdir()
-        version = stage_plugins(build, stage, arguments.application_identity)
+        version = stage_plugins(build, stage, arguments.application_identity, arguments.preserve_signatures)
         for name in ("README.md", "CHANGELOG.md", *LICENSE_FILES):
             shutil.copyfile(ROOT / name, stage / name)
         shutil.copytree(ROOT / "docs", stage / "docs")

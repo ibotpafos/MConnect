@@ -1,0 +1,541 @@
+{
+  "date": "2026-10-19",
+  "result": "VALID_CONTROLLED_NETWORK_MEASUREMENTS",
+  "scope": "Installed AU runtime, software stereo tones, real Chromium WebRTC/Opus through a local two-socket UDP relay. No DAW, physical RF impairment, phone/cable/Bluetooth test, production edit or install.",
+  "runtimeVersionReportedByServer": "0.1.6",
+  "installedBundlePlistVersion": "0.1.7",
+  "versionNote": "Report identifies the measured /info runtime; the package metadata differs. Package consistency was not evaluated in this network test.",
+  "toolVersions": {
+    "playwright": "1.62.1"
+  },
+  "sourceTimingControl": {
+    "beforeFixture": "~18 RTP/s and 38176 source frames discarded in one measured second; these controls were rejected",
+    "afterFixture": "101 RTP/s, zero source backlog discard and sender queue zero in one measured interval",
+    "fixture": "MConnectBrowserTiming.dylib in the software host and headless browser; process-local only"
+  },
+  "profiles": {
+    "loss-current": {
+      "profile": {
+        "nack": false,
+        "bufferFloor": 0,
+        "jitter": false
+      },
+      "phases": [
+        {
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "actuallyDelayedDatagrams": 0,
+          "actualMediaDatagrams": 1001,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "before": {
+            "received": 304,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 143040,
+            "energy": 0.1838708030367986,
+            "buffer": 61.2,
+            "contextState": "running",
+            "contextTime": 2.949333333333333,
+            "target": 30
+          },
+          "after": {
+            "received": 1305,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 623520,
+            "energy": 0.8227835823149015,
+            "buffer": 45.74173712528824,
+            "contextState": "running",
+            "contextTime": 12.954666666666666,
+            "target": 30
+          },
+          "received": 1001,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "nacks": 0,
+          "audioEnergy": 0.6389127792781029
+        },
+        {
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 0,
+          "actuallyDelayedDatagrams": 0,
+          "actualMediaDatagrams": 1009,
+          "actualDroppedDatagrams": 102,
+          "actuallyRecoveredDatagrams": 0,
+          "before": {
+            "received": 1305,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 623520,
+            "energy": 0.8227835823149015,
+            "buffer": 45.74173712528824,
+            "contextState": "running",
+            "contextTime": 12.96,
+            "target": 30
+          },
+          "after": {
+            "received": 2211,
+            "lost": 102,
+            "concealed": 29818,
+            "samples": 1107840,
+            "energy": 1.4701762122829138,
+            "buffer": 38.60444041685546,
+            "contextState": "running",
+            "contextTime": 23.04,
+            "target": 130
+          },
+          "received": 906,
+          "lost": 102,
+          "concealed": 29818,
+          "concealmentPercent": 6.156673273868517,
+          "nacks": 0,
+          "audioEnergy": 0.6473926299680124
+        },
+        {
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "actuallyDelayedDatagrams": 0,
+          "actualMediaDatagrams": 1015,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "before": {
+            "received": 2211,
+            "lost": 102,
+            "concealed": 29818,
+            "samples": 1107840,
+            "energy": 1.4701762122829138,
+            "buffer": 38.60444041685546,
+            "contextState": "running",
+            "contextTime": 23.045333333333332,
+            "target": 130
+          },
+          "after": {
+            "received": 3212,
+            "lost": 102,
+            "concealed": 29818,
+            "samples": 1588320,
+            "energy": 2.1090381343142806,
+            "buffer": 67.82432010003126,
+            "contextState": "running",
+            "contextTime": 33.050666666666665,
+            "target": 150
+          },
+          "received": 1001,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "nacks": 0,
+          "audioEnergy": 0.6388619220313667
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 rrtr",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": []
+      }
+    },
+    "loss-nack-experiment": {
+      "profile": {
+        "nack": true,
+        "bufferFloor": 100,
+        "jitter": false
+      },
+      "phases": [
+        {
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "actuallyDelayedDatagrams": 0,
+          "actualMediaDatagrams": 1382,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "before": {
+            "received": 321,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 153600,
+            "nacks": 0,
+            "energy": 0.201800937954773,
+            "buffer": 75.73717948717949,
+            "contextState": "running",
+            "contextTime": 3.1786666666666665,
+            "target": 100
+          },
+          "after": {
+            "received": 1601,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 767520,
+            "nacks": 0,
+            "energy": 1.0172478639974987,
+            "buffer": 95.24198617221873,
+            "contextState": "running",
+            "contextTime": 15.973333333333333,
+            "target": 100
+          },
+          "received": 1280,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "nacks": 0,
+          "audioEnergy": 0.8154469260427257
+        },
+        {
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 0,
+          "actuallyDelayedDatagrams": 0,
+          "actualMediaDatagrams": 1131,
+          "actualDroppedDatagrams": 117,
+          "actuallyRecoveredDatagrams": 107,
+          "before": {
+            "received": 1685,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 807840,
+            "nacks": 0,
+            "energy": 1.0707660916036181,
+            "buffer": 95.48059701492538,
+            "contextState": "running",
+            "contextTime": 16.810666666666666,
+            "target": 100
+          },
+          "after": {
+            "received": 2696,
+            "lost": 0,
+            "concealed": 1109,
+            "samples": 1293120,
+            "nacks": 107,
+            "energy": 1.7153435928116598,
+            "buffer": 96.65424739195231,
+            "contextState": "running",
+            "contextTime": 26.917333333333332,
+            "target": 100
+          },
+          "received": 1011,
+          "lost": 0,
+          "concealed": 1109,
+          "concealmentPercent": 0.22852786020441807,
+          "nacks": 107,
+          "audioEnergy": 0.6445775012080417
+        },
+        {
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "actuallyDelayedDatagrams": 0,
+          "actualMediaDatagrams": 1000,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "before": {
+            "received": 2696,
+            "lost": 0,
+            "concealed": 1109,
+            "samples": 1293120,
+            "nacks": 107,
+            "energy": 1.7153435928116598,
+            "buffer": 96.65424739195231,
+            "contextState": "running",
+            "contextTime": 26.928,
+            "target": 100
+          },
+          "after": {
+            "received": 3697,
+            "lost": 0,
+            "concealed": 1109,
+            "samples": 1773600,
+            "nacks": 107,
+            "energy": 2.3560039137177036,
+            "buffer": 97.56037991858888,
+            "contextState": "running",
+            "contextTime": 36.93333333333333,
+            "target": 100
+          },
+          "received": 1001,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "nacks": 0,
+          "audioEnergy": 0.6406603209060437
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 rrtr",
+          "a=rtcp-fb:111 nack",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": [
+          "a=rtcp-fb:111 nack"
+        ]
+      }
+    },
+    "jitter-current": {
+      "profile": {
+        "nack": false,
+        "bufferFloor": 0,
+        "jitter": true
+      },
+      "phases": [
+        {
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "actuallyDelayedDatagrams": 0,
+          "actualMediaDatagrams": 1001,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "before": {
+            "received": 316,
+            "lost": 0,
+            "concealed": 482,
+            "samples": 151200,
+            "energy": 0.29934137304023095,
+            "buffer": 45.17571884984026,
+            "contextState": "running",
+            "contextTime": 2.976,
+            "target": 30
+          },
+          "after": {
+            "received": 1317,
+            "lost": 0,
+            "concealed": 482,
+            "samples": 631200,
+            "energy": 0.9369444849033186,
+            "buffer": 42.84082254379284,
+            "contextState": "running",
+            "contextTime": 12.981333333333334,
+            "target": 30
+          },
+          "received": 1001,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "nacks": 0,
+          "audioEnergy": 0.6376031118630876
+        },
+        {
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 350,
+          "actuallyDelayedDatagrams": 250,
+          "actualMediaDatagrams": 1251,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "before": {
+            "received": 1317,
+            "lost": 0,
+            "concealed": 482,
+            "samples": 631200,
+            "energy": 0.9369444849033186,
+            "buffer": 42.84082254379284,
+            "contextState": "running",
+            "contextTime": 12.986666666666666,
+            "target": 30
+          },
+          "after": {
+            "received": 2369,
+            "lost": 7,
+            "concealed": 88604,
+            "samples": 1140000,
+            "energy": 1.6164952099635668,
+            "buffer": 31.044362292051755,
+            "contextState": "running",
+            "contextTime": 23.578666666666667,
+            "target": 130
+          },
+          "received": 1052,
+          "lost": 7,
+          "concealed": 88122,
+          "concealmentPercent": 17.319575471698112,
+          "nacks": 0,
+          "audioEnergy": 0.6795507250602482
+        },
+        {
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "actuallyDelayedDatagrams": 0,
+          "actualMediaDatagrams": 1129,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "before": {
+            "received": 2561,
+            "lost": 7,
+            "concealed": 104045,
+            "samples": 1231680,
+            "energy": 1.7388894278636227,
+            "buffer": 29.75399223133362,
+            "contextState": "running",
+            "contextTime": 25.504,
+            "target": 150
+          },
+          "after": {
+            "received": 3600,
+            "lost": 0,
+            "concealed": 104045,
+            "samples": 1727040,
+            "energy": 2.3970573669620463,
+            "buffer": 56.766556787533716,
+            "contextState": "running",
+            "contextTime": 35.808,
+            "target": 140
+          },
+          "received": 1039,
+          "lost": -7,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "nacks": 0,
+          "audioEnergy": 0.6581679390984236
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 rrtr",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": []
+      }
+    },
+    "jitter-500-experiment": {
+      "profile": {
+        "nack": false,
+        "bufferFloor": 500,
+        "jitter": true
+      },
+      "phases": [
+        {
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "actuallyDelayedDatagrams": 0,
+          "actualMediaDatagrams": 1309,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "before": {
+            "received": 528,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 252000,
+            "energy": 0.3302903814522085,
+            "buffer": 154.6492985971944,
+            "contextState": "running",
+            "contextTime": 5.242666666666667,
+            "target": 500
+          },
+          "after": {
+            "received": 1610,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 771360,
+            "energy": 1.020414304194437,
+            "buffer": 354.50704225352115,
+            "contextState": "running",
+            "contextTime": 16.058666666666667,
+            "target": 500
+          },
+          "received": 1082,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "nacks": 0,
+          "audioEnergy": 0.6901239227422284
+        },
+        {
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 350,
+          "actuallyDelayedDatagrams": 201,
+          "actualMediaDatagrams": 1008,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "before": {
+            "received": 1610,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 771360,
+            "energy": 1.020414304194437,
+            "buffer": 354.50704225352115,
+            "contextState": "running",
+            "contextTime": 16.069333333333333,
+            "target": 500
+          },
+          "after": {
+            "received": 2608,
+            "lost": 6,
+            "concealed": 0,
+            "samples": 1253760,
+            "energy": 1.661469988073852,
+            "buffer": 378.76509544215037,
+            "contextState": "running",
+            "contextTime": 26.122666666666667,
+            "target": 500
+          },
+          "received": 998,
+          "lost": 6,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "nacks": 0,
+          "audioEnergy": 0.641055683879415
+        },
+        {
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "actuallyDelayedDatagrams": 0,
+          "actualMediaDatagrams": 1005,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "before": {
+            "received": 2608,
+            "lost": 6,
+            "concealed": 0,
+            "samples": 1253760,
+            "energy": 1.661469988073852,
+            "buffer": 378.76509544215037,
+            "contextState": "running",
+            "contextTime": 26.138666666666666,
+            "target": 500
+          },
+          "after": {
+            "received": 3623,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 1737600,
+            "energy": 2.307437180379061,
+            "buffer": 407.1048951048951,
+            "contextState": "running",
+            "contextTime": 36.192,
+            "target": 500
+          },
+          "received": 1015,
+          "lost": -6,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "nacks": 0,
+          "audioEnergy": 0.6459671923052093
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 rrtr",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": []
+      }
+    }
+  },
+  "unreliableEarlyExperimentsExcluded": true,
+  "productionPluginChanged": false
+}

@@ -1,0 +1,3793 @@
+{
+  "result": "PASS_AUTOMATED_DEVICE_TEST_DEFERRED",
+  "date": "2026-10-19",
+  "baseCommit": "4e80d94daaa7f35f597e66d860b6003d8dc3c47e",
+  "buildVersion": "0.1.6",
+  "unpublishedDevelopmentBuild": true,
+  "installedPluginsModified": false,
+  "dawLaunched": false,
+  "hardware": {
+    "cpu": "Apple M4 Pro",
+    "logicalCpuCount": 14
+  },
+  "browserRuntime": {
+    "playwright": "1.62.1",
+    "browserCatalog": [
+      {
+        "name": "chromium",
+        "revision": "1234",
+        "installByDefault": true,
+        "browserVersion": "151.0.7922.34",
+        "title": "Chrome for Testing"
+      },
+      {
+        "name": "chromium-headless-shell",
+        "revision": "1234",
+        "installByDefault": true,
+        "browserVersion": "151.0.7922.34",
+        "title": "Chrome Headless Shell"
+      },
+      {
+        "name": "webkit",
+        "revision": "2336",
+        "installByDefault": true,
+        "revisionOverrides": {
+          "mac14": "2251",
+          "mac14-arm64": "2251",
+          "ubuntu20.04-x64": "2092",
+          "ubuntu20.04-arm64": "2092"
+        },
+        "browserVersion": "26.5",
+        "title": "WebKit"
+      }
+    ]
+  },
+  "binaryBundles": [
+    {
+      "format": "AU",
+      "architectures": [
+        "x86_64",
+        "arm64"
+      ],
+      "adHocSignatureValid": true,
+      "binarySha256": "bc221639c8596596a710b39f233ea230a5f889a7de7b8e334c33033c644dcaa5",
+      "version": "0.1.6"
+    },
+    {
+      "format": "VST3",
+      "architectures": [
+        "x86_64",
+        "arm64"
+      ],
+      "adHocSignatureValid": true,
+      "binarySha256": "392c801971cbbf396eb54d6250ad4feda47a822ddc26d927b1d4581243ff61ac",
+      "version": "0.1.6"
+    }
+  ],
+  "codeIdentity": {
+    "src/WebRtcAudioSender.cpp": "24ad5f92d86f4d8142bd154d0debecb2680d22fd91229c365c84294b8e63eddd",
+    "assets/web/app.js": "06b14fd5fee6a88e6781d4ffe5820e01389b905688fb8dce50fbfa90d9ba01c2",
+    "src/PluginProcessor.cpp": "d9e20fc9157cad4c459e7c946c3a131082dacd51be792f7cc79f485d44520060",
+    "src/AudioTapFifo.cpp": "964b9dab9e847217734d8c8f7dfc0829207e56f91aa53777225eb6010b832e67",
+    "testedVst3Binary": "392c801971cbbf396eb54d6250ad4feda47a822ddc26d927b1d4581243ff61ac"
+  },
+  "hostIdentity": [
+    {
+      "format": "VST3",
+      "exactBuildImageLoaded": true,
+      "runtimeVersion": "0.1.6",
+      "processLocalAuRegistration": false
+    },
+    {
+      "format": "AU",
+      "exactBuildImageLoaded": true,
+      "runtimeVersion": "0.1.6",
+      "processLocalAuRegistration": true
+    }
+  ],
+  "embeddedSource": {
+    "sourceZipSha256": "9d8df911972f4862df3e1a388390622f34482184b9d744f1d34a0d559bf71f5b",
+    "matchesProductionSource": {
+      "src/WebRtcAudioSender.cpp": true,
+      "assets/web/app.js": true,
+      "src/PluginProcessor.cpp": true,
+      "src/AudioTapFifo.cpp": true
+    }
+  },
+  "coreTests": {
+    "nativeArm64": [
+      "core",
+      "editor",
+      "release_tool"
+    ],
+    "rosettaX86_64Core": "PASS"
+  },
+  "protocol": "PASS",
+  "nackNegotiation": {
+    "result": "PASS",
+    "cases": [
+      {
+        "variant": "none",
+        "opusPayload": 111,
+        "feedback": []
+      },
+      {
+        "variant": "exact-before-codec",
+        "opusPayload": 111,
+        "feedback": [
+          "a=rtcp-fb:111 nack"
+        ]
+      },
+      {
+        "variant": "wildcard",
+        "opusPayload": 111,
+        "feedback": [
+          "a=rtcp-fb:111 nack"
+        ]
+      },
+      {
+        "variant": "pli-only",
+        "opusPayload": 111,
+        "feedback": []
+      },
+      {
+        "variant": "other-payload",
+        "opusPayload": 111,
+        "feedback": []
+      }
+    ]
+  },
+  "networkProfiles": [
+    {
+      "result": "PASS",
+      "engine": "chromium",
+      "profile": "loss",
+      "badStart": false,
+      "warmupSeconds": 4.009,
+      "productionNegotiation": true,
+      "phases": [
+        {
+          "name": "healthy",
+          "seconds": 8,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 800,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 404,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 165120,
+            "nacks": 0,
+            "energy": 0.3173667200356698,
+            "emitted": 172320,
+            "delay": 81432,
+            "jitter": 0.002,
+            "targetDelay": 51696,
+            "minimumDelay": 5059.2,
+            "inserted": 0,
+            "removed": 6048,
+            "contextState": "running",
+            "contextTime": 4.010666666666666,
+            "target": 300
+          },
+          "after": {
+            "received": 1204,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 549600,
+            "nacks": 0,
+            "energy": 0.8270593983099409,
+            "emitted": 563040,
+            "delay": 217713.6,
+            "jitter": 0.002,
+            "targetDelay": 168912,
+            "minimumDelay": 12873.6,
+            "inserted": 0,
+            "removed": 13104,
+            "contextState": "running",
+            "contextTime": 12.010666666666667,
+            "target": 300
+          },
+          "received": 800,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 348.7960687960688,
+          "audioEnergy": 0.5096926782742711,
+          "decodedStereo": [
+            [
+              0.25045890208744115,
+              0.0043652438460916815
+            ],
+            [
+              0.004338329644488227,
+              0.25145904090884336
+            ]
+          ]
+        },
+        {
+          "name": "adaptation",
+          "seconds": 20,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 2238,
+          "actualDroppedDatagrams": 237,
+          "actuallyRecoveredDatagrams": 214,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 1204,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 549600,
+            "nacks": 0,
+            "energy": 0.8270593983099409,
+            "emitted": 563040,
+            "delay": 217713.6,
+            "jitter": 0.002,
+            "targetDelay": 168912,
+            "minimumDelay": 12873.6,
+            "inserted": 0,
+            "removed": 13104,
+            "contextState": "running",
+            "contextTime": 12.021333333333333,
+            "target": 300
+          },
+          "after": {
+            "received": 3205,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 1510080,
+            "nacks": 211,
+            "energy": 2.100652881522274,
+            "emitted": 1523520,
+            "delay": 518452.8,
+            "jitter": 0.002,
+            "targetDelay": 457056,
+            "minimumDelay": 51264,
+            "inserted": 0,
+            "removed": 13104,
+            "contextState": "running",
+            "contextTime": 32.02133333333333,
+            "target": 300
+          },
+          "received": 2001,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 313.11344327836076,
+          "audioEnergy": 1.2735934832123332,
+          "decodedStereo": [
+            [
+              0.2500569233640135,
+              0.004182257449227186
+            ],
+            [
+              0.004380225202339728,
+              0.25135176297352024
+            ]
+          ]
+        },
+        {
+          "name": "impaired",
+          "seconds": 12,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1338,
+          "actualDroppedDatagrams": 138,
+          "actuallyRecoveredDatagrams": 121,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 3205,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 1510080,
+            "nacks": 211,
+            "energy": 2.100652881522274,
+            "emitted": 1523520,
+            "delay": 518452.8,
+            "jitter": 0.002,
+            "targetDelay": 457056,
+            "minimumDelay": 51264,
+            "inserted": 0,
+            "removed": 13104,
+            "contextState": "running",
+            "contextTime": 32.026666666666664,
+            "target": 300
+          },
+          "after": {
+            "received": 4406,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2086560,
+            "nacks": 333,
+            "energy": 2.8650590581031765,
+            "emitted": 2100000,
+            "delay": 698860.8,
+            "jitter": 0.002,
+            "targetDelay": 630000,
+            "minimumDelay": 74323.2,
+            "inserted": 0,
+            "removed": 13104,
+            "contextState": "running",
+            "contextTime": 44.026666666666664,
+            "target": 300
+          },
+          "received": 1201,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 312.94754371357214,
+          "audioEnergy": 0.7644061765809025,
+          "decodedStereo": [
+            [
+              0.2499928676417584,
+              0.002833644065965126
+            ],
+            [
+              0.004352115388850753,
+              0.25143704238787734
+            ]
+          ]
+        },
+        {
+          "name": "recovery",
+          "seconds": 16,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1601,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 4406,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2086560,
+            "nacks": 333,
+            "energy": 2.8650590581031765,
+            "emitted": 2100000,
+            "delay": 698860.8,
+            "jitter": 0.002,
+            "targetDelay": 630000,
+            "minimumDelay": 74323.2,
+            "inserted": 0,
+            "removed": 13104,
+            "contextState": "running",
+            "contextTime": 44.032,
+            "target": 300
+          },
+          "after": {
+            "received": 6007,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2855040,
+            "nacks": 333,
+            "energy": 3.884056339256775,
+            "emitted": 2868480,
+            "delay": 940900.8,
+            "jitter": 0.002,
+            "targetDelay": 860544,
+            "minimumDelay": 105062.4,
+            "inserted": 0,
+            "removed": 13104,
+            "contextState": "running",
+            "contextTime": 60.04266666666667,
+            "target": 300
+          },
+          "received": 1601,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 314.9594003747658,
+          "audioEnergy": 1.0189972811535983,
+          "decodedStereo": [
+            [
+              0.25040729178401355,
+              0.003853548599773443
+            ],
+            [
+              0.004334369383268801,
+              0.25140151960671364
+            ]
+          ]
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 rrtr",
+          "a=rtcp-fb:111 nack",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": [
+          "a=rtcp-fb:111 nack"
+        ]
+      },
+      "errors": [],
+      "format": "VST3",
+      "measurementWindowsPerPhase": 1
+    },
+    {
+      "result": "PASS",
+      "engine": "chromium",
+      "profile": "jitter",
+      "badStart": false,
+      "warmupSeconds": 4.008,
+      "productionNegotiation": true,
+      "phases": [
+        {
+          "name": "healthy",
+          "seconds": 8,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 800,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 405,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 165600,
+            "nacks": 0,
+            "energy": 0.21664304316214586,
+            "emitted": 172800,
+            "delay": 82372.8,
+            "jitter": 0.002,
+            "targetDelay": 51840,
+            "minimumDelay": 5040,
+            "inserted": 0,
+            "removed": 6192,
+            "contextState": "running",
+            "contextTime": 4.010666666666666,
+            "target": 300
+          },
+          "after": {
+            "received": 1205,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 549600,
+            "nacks": 0,
+            "energy": 0.7274779168565612,
+            "emitted": 563520,
+            "delay": 218577.6,
+            "jitter": 0.002,
+            "targetDelay": 169056,
+            "minimumDelay": 12854.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 12.010666666666667,
+            "target": 300
+          },
+          "received": 800,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 348.5995085995086,
+          "audioEnergy": 0.5108348736944153,
+          "decodedStereo": [
+            [
+              0.2504008264137381,
+              0.003805144330577617
+            ],
+            [
+              0.004152750434732,
+              0.2510983143570725
+            ]
+          ]
+        },
+        {
+          "name": "adaptation",
+          "seconds": 20,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 2499,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 500,
+          "before": {
+            "received": 1205,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 549600,
+            "nacks": 0,
+            "energy": 0.7274779168565612,
+            "emitted": 563520,
+            "delay": 218577.6,
+            "jitter": 0.002,
+            "targetDelay": 169056,
+            "minimumDelay": 12854.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 12.026666666666667,
+            "target": 300
+          },
+          "after": {
+            "received": 3205,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 1510560,
+            "nacks": 499,
+            "energy": 2.005759822493393,
+            "emitted": 1524480,
+            "delay": 514036.8,
+            "jitter": 0.002,
+            "targetDelay": 457344,
+            "minimumDelay": 50803.2,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 32.026666666666664,
+            "target": 300
+          },
+          "received": 2000,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 307.4625374625374,
+          "audioEnergy": 1.2782819056368315,
+          "decodedStereo": [
+            [
+              0.2499105154870765,
+              0.004152367365647556
+            ],
+            [
+              0.004019939745938295,
+              0.25110254476055927
+            ]
+          ]
+        },
+        {
+          "name": "impaired",
+          "seconds": 12,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1500,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 300,
+          "before": {
+            "received": 3205,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 1510560,
+            "nacks": 499,
+            "energy": 2.005759822493393,
+            "emitted": 1524480,
+            "delay": 514036.8,
+            "jitter": 0.002,
+            "targetDelay": 457344,
+            "minimumDelay": 50803.2,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 32.037333333333336,
+            "target": 300
+          },
+          "after": {
+            "received": 4407,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2087040,
+            "nacks": 800,
+            "energy": 2.7726154818530593,
+            "emitted": 2100960,
+            "delay": 691305.6,
+            "jitter": 0.002,
+            "targetDelay": 630288,
+            "minimumDelay": 73862.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 44.037333333333336,
+            "target": 300
+          },
+          "received": 1202,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 307.50208159866776,
+          "audioEnergy": 0.7668556593596665,
+          "decodedStereo": [
+            [
+              0.2496308310363882,
+              0.003737870469493368
+            ],
+            [
+              0.004055159939951591,
+              0.25119318408354313
+            ]
+          ]
+        },
+        {
+          "name": "recovery",
+          "seconds": 16,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1601,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 4407,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2087040,
+            "nacks": 800,
+            "energy": 2.7726154818530593,
+            "emitted": 2100960,
+            "delay": 691305.6,
+            "jitter": 0.002,
+            "targetDelay": 630288,
+            "minimumDelay": 73862.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 44.037333333333336,
+            "target": 300
+          },
+          "after": {
+            "received": 6007,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2855040,
+            "nacks": 800,
+            "energy": 3.7942320000044725,
+            "emitted": 2868960,
+            "delay": 929332.8,
+            "jitter": 0.001,
+            "targetDelay": 860688,
+            "minimumDelay": 104582.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 60.04266666666667,
+            "target": 300
+          },
+          "received": 1600,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 309.9312500000001,
+          "audioEnergy": 1.0216165181514132,
+          "decodedStereo": [
+            [
+              0.24932216610129865,
+              0.0030297851944605983
+            ],
+            [
+              0.003962723928221227,
+              0.2512123048879559
+            ]
+          ]
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 rrtr",
+          "a=rtcp-fb:111 nack",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": [
+          "a=rtcp-fb:111 nack"
+        ]
+      },
+      "errors": [],
+      "format": "VST3",
+      "measurementWindowsPerPhase": 1
+    },
+    {
+      "result": "PASS",
+      "engine": "chromium",
+      "profile": "combined",
+      "badStart": false,
+      "warmupSeconds": 4.007,
+      "productionNegotiation": true,
+      "phases": [
+        {
+          "name": "healthy",
+          "seconds": 8,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 801,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 404,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 165120,
+            "nacks": 0,
+            "energy": 0.21454178691469572,
+            "emitted": 172320,
+            "delay": 82152,
+            "jitter": 0.002,
+            "targetDelay": 51696,
+            "minimumDelay": 5030.4,
+            "inserted": 0,
+            "removed": 6048,
+            "contextState": "running",
+            "contextTime": 4.005333333333334,
+            "target": 300
+          },
+          "after": {
+            "received": 1205,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 549600,
+            "nacks": 0,
+            "energy": 0.7309643163126661,
+            "emitted": 563520,
+            "delay": 218572.8,
+            "jitter": 0.002,
+            "targetDelay": 169056,
+            "minimumDelay": 12854.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 12.010666666666667,
+            "target": 300
+          },
+          "received": 801,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 348.7239263803681,
+          "audioEnergy": 0.5164225293979704,
+          "decodedStereo": [
+            [
+              0.25040162339109545,
+              0.0043372458949193626
+            ],
+            [
+              0.0028507763194024933,
+              0.24882013676227394
+            ]
+          ]
+        },
+        {
+          "name": "adaptation",
+          "seconds": 20,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 3596,
+          "actualDroppedDatagrams": 377,
+          "actuallyRecoveredDatagrams": 292,
+          "actuallyDelayedDatagrams": 646,
+          "before": {
+            "received": 1205,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 549600,
+            "nacks": 0,
+            "energy": 0.7309643163126661,
+            "emitted": 563520,
+            "delay": 218572.8,
+            "jitter": 0.002,
+            "targetDelay": 169056,
+            "minimumDelay": 12854.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 12.016,
+            "target": 300
+          },
+          "after": {
+            "received": 3191,
+            "lost": 5,
+            "concealed": 6500,
+            "samples": 1510080,
+            "nacks": 593,
+            "energy": 2.023978228050461,
+            "emitted": 1499040,
+            "delay": 629188.8,
+            "jitter": 0.002,
+            "targetDelay": 690552,
+            "minimumDelay": 218707.2,
+            "inserted": 18192,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 32.016,
+            "target": 600
+          },
+          "received": 1986,
+          "lost": 5,
+          "concealed": 6500,
+          "concealmentPercent": 0.6767449608529069,
+          "intervalBufferMs": 438.9173935351463,
+          "audioEnergy": 1.2930139117377948,
+          "decodedStereo": [
+            [
+              0.25004466830257716,
+              0.0043688949890219545
+            ],
+            [
+              0.00413347327874798,
+              0.2496213862737608
+            ]
+          ]
+        },
+        {
+          "name": "impaired",
+          "seconds": 12,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 2104,
+          "actualDroppedDatagrams": 201,
+          "actuallyRecoveredDatagrams": 153,
+          "actuallyDelayedDatagrams": 377,
+          "before": {
+            "received": 3191,
+            "lost": 5,
+            "concealed": 6500,
+            "samples": 1510080,
+            "nacks": 593,
+            "energy": 2.023978228050461,
+            "emitted": 1499040,
+            "delay": 629188.8,
+            "jitter": 0.002,
+            "targetDelay": 690552,
+            "minimumDelay": 218707.2,
+            "inserted": 18192,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 32.016,
+            "target": 600
+          },
+          "after": {
+            "received": 4391,
+            "lost": 6,
+            "concealed": 6500,
+            "samples": 2086080,
+            "nacks": 937,
+            "energy": 2.7993287997160716,
+            "emitted": 2075040,
+            "delay": 942187.2,
+            "jitter": 0.002,
+            "targetDelay": 1036152,
+            "minimumDelay": 333907.2,
+            "inserted": 18192,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 44.02133333333333,
+            "target": 600
+          },
+          "received": 1200,
+          "lost": 1,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 543.3999999999997,
+          "audioEnergy": 0.7753505716656108,
+          "decodedStereo": [
+            [
+              0.24964127137505726,
+              0.0036482512186033454
+            ],
+            [
+              0.004159121813109512,
+              0.24955894195598055
+            ]
+          ]
+        },
+        {
+          "name": "recovery",
+          "seconds": 16,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1624,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 1,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 4391,
+            "lost": 6,
+            "concealed": 6500,
+            "samples": 2086080,
+            "nacks": 937,
+            "energy": 2.7993287997160716,
+            "emitted": 2075040,
+            "delay": 942187.2,
+            "jitter": 0.002,
+            "targetDelay": 1036152,
+            "minimumDelay": 333907.2,
+            "inserted": 18192,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 44.026666666666664,
+            "target": 600
+          },
+          "after": {
+            "received": 6006,
+            "lost": 0,
+            "concealed": 6500,
+            "samples": 2854560,
+            "nacks": 939,
+            "energy": 3.8338962863414054,
+            "emitted": 2847840,
+            "delay": 1416504,
+            "jitter": 0.001,
+            "targetDelay": 1497787.2,
+            "minimumDelay": 473107.2,
+            "inserted": 18192,
+            "removed": 17520,
+            "contextState": "running",
+            "contextTime": 60.032,
+            "target": 580
+          },
+          "received": 1615,
+          "lost": -6,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 613.7639751552796,
+          "audioEnergy": 1.0345674866253338,
+          "decodedStereo": [
+            [
+              0.24986011163547428,
+              0.0030060149976723805
+            ],
+            [
+              0.004276620013555333,
+              0.24939707890204343
+            ]
+          ]
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 rrtr",
+          "a=rtcp-fb:111 nack",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": [
+          "a=rtcp-fb:111 nack"
+        ]
+      },
+      "errors": [],
+      "format": "VST3",
+      "measurementWindowsPerPhase": 1
+    },
+    {
+      "result": "PASS",
+      "engine": "chromium",
+      "profile": "combined",
+      "badStart": true,
+      "warmupSeconds": 4.008,
+      "productionNegotiation": true,
+      "phases": [
+        {
+          "name": "impaired-start",
+          "seconds": 8,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 1416,
+          "actualDroppedDatagrams": 150,
+          "actuallyRecoveredDatagrams": 111,
+          "actuallyDelayedDatagrams": 254,
+          "before": {
+            "received": 386,
+            "lost": 6,
+            "concealed": 2540,
+            "samples": 159360,
+            "nacks": 111,
+            "energy": 0.21201186883991957,
+            "emitted": 162720,
+            "delay": 72091.2,
+            "jitter": 0.002,
+            "targetDelay": 52137.6,
+            "minimumDelay": 43488,
+            "inserted": 432,
+            "removed": 5472,
+            "contextState": "running",
+            "contextTime": 4.010666666666666,
+            "target": 300
+          },
+          "after": {
+            "received": 1188,
+            "lost": 3,
+            "concealed": 2636,
+            "samples": 543840,
+            "nacks": 340,
+            "energy": 0.7220081875348213,
+            "emitted": 548640,
+            "delay": 222816,
+            "jitter": 0.002,
+            "targetDelay": 211401.6,
+            "minimumDelay": 136905.6,
+            "inserted": 1728,
+            "removed": 8928,
+            "contextState": "running",
+            "contextTime": 12.016,
+            "target": 450
+          },
+          "received": 802,
+          "lost": -3,
+          "concealed": 96,
+          "concealmentPercent": 0.024968789013732832,
+          "intervalBufferMs": 390.55970149253733,
+          "audioEnergy": 0.5099963186949017,
+          "decodedStereo": [
+            [
+              0.24906434457482718,
+              0.0029549304290145627
+            ],
+            [
+              0.003998563017493928,
+              0.250728707685921
+            ]
+          ]
+        },
+        {
+          "name": "adaptation",
+          "seconds": 20,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 3535,
+          "actualDroppedDatagrams": 365,
+          "actuallyRecoveredDatagrams": 276,
+          "actuallyDelayedDatagrams": 632,
+          "before": {
+            "received": 1188,
+            "lost": 3,
+            "concealed": 2636,
+            "samples": 543840,
+            "nacks": 340,
+            "energy": 0.7220081875348213,
+            "emitted": 548640,
+            "delay": 222816,
+            "jitter": 0.002,
+            "targetDelay": 211401.6,
+            "minimumDelay": 136905.6,
+            "inserted": 1728,
+            "removed": 8928,
+            "contextState": "running",
+            "contextTime": 12.026666666666667,
+            "target": 450
+          },
+          "after": {
+            "received": 3188,
+            "lost": 5,
+            "concealed": 3791,
+            "samples": 1504320,
+            "nacks": 907,
+            "energy": 1.9964565388106585,
+            "emitted": 1500000,
+            "delay": 637814.4,
+            "jitter": 0.002,
+            "targetDelay": 692553.6,
+            "minimumDelay": 358608,
+            "inserted": 9648,
+            "removed": 9072,
+            "contextState": "running",
+            "contextTime": 32.026666666666664,
+            "target": 600
+          },
+          "received": 2000,
+          "lost": 2,
+          "concealed": 1155,
+          "concealmentPercent": 0.12025237381309345,
+          "intervalBufferMs": 436.2159434914228,
+          "audioEnergy": 1.2744483512758373,
+          "decodedStereo": [
+            [
+              0.24949902834645812,
+              0.0031873820211127273
+            ],
+            [
+              0.004301207242407876,
+              0.2512013656340239
+            ]
+          ]
+        },
+        {
+          "name": "impaired",
+          "seconds": 12,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 2100,
+          "actualDroppedDatagrams": 212,
+          "actuallyRecoveredDatagrams": 158,
+          "actuallyDelayedDatagrams": 373,
+          "before": {
+            "received": 3188,
+            "lost": 5,
+            "concealed": 3791,
+            "samples": 1504320,
+            "nacks": 907,
+            "energy": 1.9964565388106585,
+            "emitted": 1500000,
+            "delay": 637814.4,
+            "jitter": 0.002,
+            "targetDelay": 692553.6,
+            "minimumDelay": 358608,
+            "inserted": 9648,
+            "removed": 9072,
+            "contextState": "running",
+            "contextTime": 32.032,
+            "target": 600
+          },
+          "after": {
+            "received": 4391,
+            "lost": 3,
+            "concealed": 3791,
+            "samples": 2080800,
+            "nacks": 1242,
+            "energy": 2.7612846508525473,
+            "emitted": 2076480,
+            "delay": 957801.6,
+            "jitter": 0.002,
+            "targetDelay": 1038441.6,
+            "minimumDelay": 508819.2,
+            "inserted": 9648,
+            "removed": 9072,
+            "contextState": "running",
+            "contextTime": 44.037333333333336,
+            "target": 600
+          },
+          "received": 1203,
+          "lost": -2,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 555.0707743547043,
+          "audioEnergy": 0.7648281120418887,
+          "decodedStereo": [
+            [
+              0.2498969757912964,
+              0.0042711162425635016
+            ],
+            [
+              0.00428258225750494,
+              0.25117454845415255
+            ]
+          ]
+        },
+        {
+          "name": "recovery",
+          "seconds": 16,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1616,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 4391,
+            "lost": 3,
+            "concealed": 3791,
+            "samples": 2080800,
+            "nacks": 1242,
+            "energy": 2.7612846508525473,
+            "emitted": 2076480,
+            "delay": 957801.6,
+            "jitter": 0.002,
+            "targetDelay": 1038441.6,
+            "minimumDelay": 508819.2,
+            "inserted": 9648,
+            "removed": 9072,
+            "contextState": "running",
+            "contextTime": 44.04266666666667,
+            "target": 600
+          },
+          "after": {
+            "received": 6003,
+            "lost": 0,
+            "concealed": 3791,
+            "samples": 2848800,
+            "nacks": 1244,
+            "energy": 3.780283274999321,
+            "emitted": 2849280,
+            "delay": 1433841.6,
+            "jitter": 0.002,
+            "targetDelay": 1500096,
+            "minimumDelay": 653808,
+            "inserted": 9648,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 60.04266666666667,
+            "target": 580
+          },
+          "received": 1612,
+          "lost": -3,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 615.9937888198759,
+          "audioEnergy": 1.0189986241467737,
+          "decodedStereo": [
+            [
+              0.2497927911335279,
+              0.004339840864612901
+            ],
+            [
+              0.0035618483821313425,
+              0.2510752263688401
+            ]
+          ]
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 rrtr",
+          "a=rtcp-fb:111 nack",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": [
+          "a=rtcp-fb:111 nack"
+        ]
+      },
+      "errors": [],
+      "format": "VST3",
+      "measurementWindowsPerPhase": 1
+    },
+    {
+      "result": "PASS",
+      "engine": "webkit",
+      "profile": "loss",
+      "badStart": false,
+      "warmupSeconds": 4.009,
+      "productionNegotiation": true,
+      "phases": [
+        {
+          "name": "healthy",
+          "seconds": 8,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 800,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 402,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 163680,
+            "nacks": 0,
+            "energy": 0.21527800635820862,
+            "emitted": 169920,
+            "delay": 81873.6,
+            "jitter": 0.002,
+            "targetDelay": 50976,
+            "minimumDelay": 4982.4,
+            "inserted": 0,
+            "removed": 6048,
+            "contextState": "running",
+            "contextTime": 4.016,
+            "target": 300
+          },
+          "after": {
+            "received": 1202,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 548160,
+            "nacks": 0,
+            "energy": 0.7261075676227448,
+            "emitted": 562080,
+            "delay": 221208,
+            "jitter": 0.002,
+            "targetDelay": 168624,
+            "minimumDelay": 12960,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 12.018666666666666,
+            "target": 300
+          },
+          "received": 800,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 355.2998776009792,
+          "audioEnergy": 0.5108295612645362,
+          "decodedStereo": [
+            [
+              0.24969445137076765,
+              0.0035156700142861624
+            ],
+            [
+              0.003450610227919242,
+              0.2514431369704983
+            ]
+          ]
+        },
+        {
+          "name": "adaptation",
+          "seconds": 20,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 2238,
+          "actualDroppedDatagrams": 237,
+          "actuallyRecoveredDatagrams": 213,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 1202,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 548160,
+            "nacks": 0,
+            "energy": 0.7261075676227448,
+            "emitted": 562080,
+            "delay": 221208,
+            "jitter": 0.002,
+            "targetDelay": 168624,
+            "minimumDelay": 12960,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 12.021333333333333,
+            "target": 300
+          },
+          "after": {
+            "received": 3203,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 1508640,
+            "nacks": 211,
+            "energy": 2.0018257868875566,
+            "emitted": 1522560,
+            "delay": 522840,
+            "jitter": 0.002,
+            "targetDelay": 456768,
+            "minimumDelay": 66518.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 32.026666666666664,
+            "target": 300
+          },
+          "received": 2001,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 314.0429785107446,
+          "audioEnergy": 1.275718219264812,
+          "decodedStereo": [
+            [
+              0.24971691495891166,
+              0.00328616059970623
+            ],
+            [
+              0.0033921120037329,
+              0.25133323795440743
+            ]
+          ]
+        },
+        {
+          "name": "impaired",
+          "seconds": 12,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1338,
+          "actualDroppedDatagrams": 138,
+          "actuallyRecoveredDatagrams": 120,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 3203,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 1508640,
+            "nacks": 211,
+            "energy": 2.0018257868875566,
+            "emitted": 1522560,
+            "delay": 522840,
+            "jitter": 0.002,
+            "targetDelay": 456768,
+            "minimumDelay": 66518.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 32.029333333333334,
+            "target": 300
+          },
+          "after": {
+            "received": 4403,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2084640,
+            "nacks": 333,
+            "energy": 2.7669691963365337,
+            "emitted": 2098560,
+            "delay": 703612.8,
+            "jitter": 0.002,
+            "targetDelay": 629568,
+            "minimumDelay": 90432,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 44.032,
+            "target": 300
+          },
+          "received": 1200,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 313.84166666666675,
+          "audioEnergy": 0.7651434094489771,
+          "decodedStereo": [
+            [
+              0.24934731267192053,
+              0.0033797203722553647
+            ],
+            [
+              0.0032372561651158737,
+              0.25140679850993575
+            ]
+          ]
+        },
+        {
+          "name": "recovery",
+          "seconds": 16,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1600,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 4403,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2084640,
+            "nacks": 333,
+            "energy": 2.7669691963365337,
+            "emitted": 2098560,
+            "delay": 703612.8,
+            "jitter": 0.002,
+            "targetDelay": 629568,
+            "minimumDelay": 90432,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 44.034666666666666,
+            "target": 300
+          },
+          "after": {
+            "received": 5999,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2850720,
+            "nacks": 333,
+            "energy": 3.784516075924918,
+            "emitted": 2864640,
+            "delay": 945412.8,
+            "jitter": 0.002,
+            "targetDelay": 859392,
+            "minimumDelay": 128860.8,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 60.037333333333336,
+            "target": 300
+          },
+          "received": 1596,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 315.6328320802005,
+          "audioEnergy": 1.0175468795883842,
+          "decodedStereo": [
+            [
+              0.24982254120939962,
+              0.004299563358966721
+            ],
+            [
+              0.0033972635881100513,
+              0.2512615661685669
+            ]
+          ]
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 nack",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": [
+          "a=rtcp-fb:111 nack"
+        ]
+      },
+      "errors": [],
+      "format": "VST3",
+      "measurementWindowsPerPhase": 1
+    },
+    {
+      "result": "PASS",
+      "engine": "webkit",
+      "profile": "jitter",
+      "badStart": false,
+      "warmupSeconds": 4.013,
+      "productionNegotiation": true,
+      "phases": [
+        {
+          "name": "healthy",
+          "seconds": 8,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 800,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 402,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 164640,
+            "nacks": 0,
+            "energy": 0.2140076238286011,
+            "emitted": 171360,
+            "delay": 81720,
+            "jitter": 0.002,
+            "targetDelay": 51408,
+            "minimumDelay": 5011.2,
+            "inserted": 0,
+            "removed": 6048,
+            "contextState": "running",
+            "contextTime": 4.018666666666666,
+            "target": 300
+          },
+          "after": {
+            "received": 1203,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 548640,
+            "nacks": 0,
+            "energy": 0.7224694055993977,
+            "emitted": 562560,
+            "delay": 218836.8,
+            "jitter": 0.002,
+            "targetDelay": 168768,
+            "minimumDelay": 12835.2,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 12.021333333333333,
+            "target": 300
+          },
+          "received": 801,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 350.50306748466255,
+          "audioEnergy": 0.5084617817707966,
+          "decodedStereo": [
+            [
+              0.25024889424888175,
+              0.003880844968579203
+            ],
+            [
+              0.004163534205645378,
+              0.25117396136338566
+            ]
+          ]
+        },
+        {
+          "name": "adaptation",
+          "seconds": 20,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 2501,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 500,
+          "before": {
+            "received": 1203,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 548640,
+            "nacks": 0,
+            "energy": 0.7224694055993977,
+            "emitted": 562560,
+            "delay": 218836.8,
+            "jitter": 0.002,
+            "targetDelay": 168768,
+            "minimumDelay": 12835.2,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 12.026666666666667,
+            "target": 300
+          },
+          "after": {
+            "received": 3204,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 1509120,
+            "nacks": 500,
+            "energy": 2.0209423708713357,
+            "emitted": 1523040,
+            "delay": 514176,
+            "jitter": 0.002,
+            "targetDelay": 456912,
+            "minimumDelay": 45763.2,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 32.029333333333334,
+            "target": 300
+          },
+          "received": 2001,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 307.4912543728136,
+          "audioEnergy": 1.298472965271938,
+          "decodedStereo": [
+            [
+              0.24918929380547047,
+              0.002877696531880495
+            ],
+            [
+              0.004004214611126732,
+              0.24874537469988012
+            ]
+          ]
+        },
+        {
+          "name": "impaired",
+          "seconds": 12,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1501,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 301,
+          "before": {
+            "received": 3204,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 1509120,
+            "nacks": 500,
+            "energy": 2.0209423708713357,
+            "emitted": 1523040,
+            "delay": 514176,
+            "jitter": 0.002,
+            "targetDelay": 456912,
+            "minimumDelay": 45763.2,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 32.032,
+            "target": 300
+          },
+          "after": {
+            "received": 4404,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2085600,
+            "nacks": 800,
+            "energy": 2.8019342483775134,
+            "emitted": 2099520,
+            "delay": 691425.6,
+            "jitter": 0.001,
+            "targetDelay": 629856,
+            "minimumDelay": 68822.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 44.037333333333336,
+            "target": 300
+          },
+          "received": 1200,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 307.4687760199833,
+          "audioEnergy": 0.7809918775061777,
+          "decodedStereo": [
+            [
+              0.24930819062252937,
+              0.002969563308564395
+            ],
+            [
+              0.003937402743880051,
+              0.24920395633594894
+            ]
+          ]
+        },
+        {
+          "name": "recovery",
+          "seconds": 16,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1601,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 4404,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2085600,
+            "nacks": 800,
+            "energy": 2.8019342483775134,
+            "emitted": 2099520,
+            "delay": 691425.6,
+            "jitter": 0.001,
+            "targetDelay": 629856,
+            "minimumDelay": 68822.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 44.04,
+            "target": 300
+          },
+          "after": {
+            "received": 6005,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 2853600,
+            "nacks": 801,
+            "energy": 3.842402425476258,
+            "emitted": 2867520,
+            "delay": 929443.2,
+            "jitter": 0.001,
+            "targetDelay": 860256,
+            "minimumDelay": 99542.4,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 60.04,
+            "target": 300
+          },
+          "received": 1601,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 309.91875,
+          "audioEnergy": 1.0404681770987447,
+          "decodedStereo": [
+            [
+              0.24957653428713777,
+              0.003640473580251599
+            ],
+            [
+              0.00389448090255201,
+              0.24946274965071238
+            ]
+          ]
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 nack",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": [
+          "a=rtcp-fb:111 nack"
+        ]
+      },
+      "errors": [],
+      "format": "VST3",
+      "measurementWindowsPerPhase": 1
+    },
+    {
+      "result": "PASS",
+      "engine": "webkit",
+      "profile": "combined",
+      "badStart": false,
+      "warmupSeconds": 4.014,
+      "productionNegotiation": true,
+      "phases": [
+        {
+          "name": "healthy",
+          "seconds": 8,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 801,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 0,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 402,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 164640,
+            "nacks": 0,
+            "energy": 0.21572101181047867,
+            "emitted": 171360,
+            "delay": 81710.4,
+            "jitter": 0.001,
+            "targetDelay": 51408,
+            "minimumDelay": 5011.2,
+            "inserted": 0,
+            "removed": 6048,
+            "contextState": "running",
+            "contextTime": 4.021333333333334,
+            "target": 300
+          },
+          "after": {
+            "received": 1203,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 548640,
+            "nacks": 0,
+            "energy": 0.7281898091166653,
+            "emitted": 562560,
+            "delay": 218899.2,
+            "jitter": 0.002,
+            "targetDelay": 168768,
+            "minimumDelay": 12835.2,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 12.024,
+            "target": 300
+          },
+          "received": 801,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 350.68711656441724,
+          "audioEnergy": 0.5124687973061867,
+          "decodedStereo": [
+            [
+              0.2498665196610998,
+              0.003840837039091004
+            ],
+            [
+              0.0038382957477739823,
+              0.24899964719536757
+            ]
+          ]
+        },
+        {
+          "name": "adaptation",
+          "seconds": 20,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 3544,
+          "actualDroppedDatagrams": 373,
+          "actuallyRecoveredDatagrams": 275,
+          "actuallyDelayedDatagrams": 636,
+          "before": {
+            "received": 1203,
+            "lost": 0,
+            "concealed": 0,
+            "samples": 548640,
+            "nacks": 0,
+            "energy": 0.7281898091166653,
+            "emitted": 562560,
+            "delay": 218899.2,
+            "jitter": 0.002,
+            "targetDelay": 168768,
+            "minimumDelay": 12835.2,
+            "inserted": 0,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 12.032,
+            "target": 300
+          },
+          "after": {
+            "received": 3191,
+            "lost": 5,
+            "concealed": 7260,
+            "samples": 1509120,
+            "nacks": 568,
+            "energy": 2.028368908480244,
+            "emitted": 1490880,
+            "delay": 594542.4,
+            "jitter": 0.002,
+            "targetDelay": 686304,
+            "minimumDelay": 236841.6,
+            "inserted": 24533,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 32.034666666666666,
+            "target": 600
+          },
+          "received": 1988,
+          "lost": 5,
+          "concealed": 7260,
+          "concealmentPercent": 0.755872063968016,
+          "intervalBufferMs": 404.64839710444676,
+          "audioEnergy": 1.3001790993635787,
+          "decodedStereo": [
+            [
+              0.2504426018028246,
+              0.004332129628421116
+            ],
+            [
+              0.003976088302550571,
+              0.24924015763568091
+            ]
+          ]
+        },
+        {
+          "name": "impaired",
+          "seconds": 12,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 2101,
+          "actualDroppedDatagrams": 199,
+          "actuallyRecoveredDatagrams": 152,
+          "actuallyDelayedDatagrams": 376,
+          "before": {
+            "received": 3191,
+            "lost": 5,
+            "concealed": 7260,
+            "samples": 1509120,
+            "nacks": 568,
+            "energy": 2.028368908480244,
+            "emitted": 1490880,
+            "delay": 594542.4,
+            "jitter": 0.002,
+            "targetDelay": 686304,
+            "minimumDelay": 236841.6,
+            "inserted": 24533,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 32.037333333333336,
+            "target": 600
+          },
+          "after": {
+            "received": 4390,
+            "lost": 6,
+            "concealed": 7260,
+            "samples": 2085600,
+            "nacks": 917,
+            "energy": 2.807959513754376,
+            "emitted": 2067360,
+            "delay": 907627.2,
+            "jitter": 0.002,
+            "targetDelay": 1032192,
+            "minimumDelay": 396307.2,
+            "inserted": 24533,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 44.04,
+            "target": 600
+          },
+          "received": 1199,
+          "lost": 1,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 543.0974188176518,
+          "audioEnergy": 0.7795906052741319,
+          "decodedStereo": [
+            [
+              0.25001006111300483,
+              0.002927168802982522
+            ],
+            [
+              0.00406790530089492,
+              0.24903893657182163
+            ]
+          ]
+        },
+        {
+          "name": "recovery",
+          "seconds": 16,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1617,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 3,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 4390,
+            "lost": 6,
+            "concealed": 7260,
+            "samples": 2085600,
+            "nacks": 917,
+            "energy": 2.807959513754376,
+            "emitted": 2067360,
+            "delay": 907627.2,
+            "jitter": 0.002,
+            "targetDelay": 1032192,
+            "minimumDelay": 396307.2,
+            "inserted": 24533,
+            "removed": 13536,
+            "contextState": "running",
+            "contextTime": 44.04,
+            "target": 600
+          },
+          "after": {
+            "received": 6000,
+            "lost": 0,
+            "concealed": 7260,
+            "samples": 2851680,
+            "nacks": 920,
+            "energy": 3.8438176942268427,
+            "emitted": 2837760,
+            "delay": 1374297.6,
+            "jitter": 0.002,
+            "targetDelay": 1484793.6,
+            "minimumDelay": 529152,
+            "inserted": 24533,
+            "removed": 17472,
+            "contextState": "running",
+            "contextTime": 60.04266666666667,
+            "target": 580
+          },
+          "received": 1610,
+          "lost": -6,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 605.7507788161995,
+          "audioEnergy": 1.035858180472467,
+          "decodedStereo": [
+            [
+              0.25009425494831683,
+              0.0035053787204461515
+            ],
+            [
+              0.0032262077759908645,
+              0.24909475763564864
+            ]
+          ]
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 nack",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": [
+          "a=rtcp-fb:111 nack"
+        ]
+      },
+      "errors": [],
+      "format": "VST3",
+      "measurementWindowsPerPhase": 1
+    },
+    {
+      "result": "PASS",
+      "engine": "webkit",
+      "profile": "combined",
+      "badStart": true,
+      "warmupSeconds": 4.008,
+      "productionNegotiation": true,
+      "phases": [
+        {
+          "name": "impaired-start",
+          "seconds": 8,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 1446,
+          "actualDroppedDatagrams": 152,
+          "actuallyRecoveredDatagrams": 116,
+          "actuallyDelayedDatagrams": 258,
+          "before": {
+            "received": 388,
+            "lost": 5,
+            "concealed": 2396,
+            "samples": 160320,
+            "nacks": 112,
+            "energy": 0.21913171197915804,
+            "emitted": 163680,
+            "delay": 72057.6,
+            "jitter": 0.002,
+            "targetDelay": 52608,
+            "minimumDelay": 43612.8,
+            "inserted": 288,
+            "removed": 5472,
+            "contextState": "running",
+            "contextTime": 4.016,
+            "target": 300
+          },
+          "after": {
+            "received": 1188,
+            "lost": 6,
+            "concealed": 4078,
+            "samples": 544320,
+            "nacks": 344,
+            "energy": 0.7290940324658738,
+            "emitted": 551520,
+            "delay": 186000,
+            "jitter": 0.002,
+            "targetDelay": 169752,
+            "minimumDelay": 149260.8,
+            "inserted": 2592,
+            "removed": 13248,
+            "contextState": "running",
+            "contextTime": 12.016,
+            "target": 450
+          },
+          "received": 800,
+          "lost": 1,
+          "concealed": 1682,
+          "concealmentPercent": 0.43802083333333336,
+          "intervalBufferMs": 293.78712871287127,
+          "audioEnergy": 0.5099623204867157,
+          "decodedStereo": [
+            [
+              0.24989023527924834,
+              0.0040462993212919155
+            ],
+            [
+              0.003468091586082921,
+              0.25070283618825706
+            ]
+          ]
+        },
+        {
+          "name": "adaptation",
+          "seconds": 20,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 3559,
+          "actualDroppedDatagrams": 370,
+          "actuallyRecoveredDatagrams": 282,
+          "actuallyDelayedDatagrams": 636,
+          "before": {
+            "received": 1188,
+            "lost": 6,
+            "concealed": 4078,
+            "samples": 544320,
+            "nacks": 344,
+            "energy": 0.7290940324658738,
+            "emitted": 551520,
+            "delay": 186000,
+            "jitter": 0.002,
+            "targetDelay": 169752,
+            "minimumDelay": 149260.8,
+            "inserted": 2592,
+            "removed": 13248,
+            "contextState": "running",
+            "contextTime": 12.029333333333334,
+            "target": 450
+          },
+          "after": {
+            "received": 3189,
+            "lost": 7,
+            "concealed": 4895,
+            "samples": 1505280,
+            "nacks": 915,
+            "energy": 2.004219719170861,
+            "emitted": 1496160,
+            "delay": 624729.6,
+            "jitter": 0.002,
+            "targetDelay": 695424,
+            "minimumDelay": 431635.2,
+            "inserted": 17712,
+            "removed": 13248,
+            "contextState": "running",
+            "contextTime": 32.032,
+            "target": 600
+          },
+          "received": 2001,
+          "lost": 1,
+          "concealed": 817,
+          "concealmentPercent": 0.08501914751914752,
+          "intervalBufferMs": 464.4410569105691,
+          "audioEnergy": 1.2751256867049872,
+          "decodedStereo": [
+            [
+              0.24991636715616045,
+              0.004229208071854593
+            ],
+            [
+              0.003647862927177329,
+              0.25139883092864884
+            ]
+          ]
+        },
+        {
+          "name": "impaired",
+          "seconds": 12,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 2143,
+          "actualDroppedDatagrams": 212,
+          "actuallyRecoveredDatagrams": 170,
+          "actuallyDelayedDatagrams": 383,
+          "before": {
+            "received": 3189,
+            "lost": 7,
+            "concealed": 4895,
+            "samples": 1505280,
+            "nacks": 915,
+            "energy": 2.004219719170861,
+            "emitted": 1496160,
+            "delay": 624729.6,
+            "jitter": 0.002,
+            "targetDelay": 695424,
+            "minimumDelay": 431635.2,
+            "inserted": 17712,
+            "removed": 13248,
+            "contextState": "running",
+            "contextTime": 32.034666666666666,
+            "target": 600
+          },
+          "after": {
+            "received": 4392,
+            "lost": 5,
+            "concealed": 4895,
+            "samples": 2079840,
+            "nacks": 1269,
+            "energy": 2.7667191459138203,
+            "emitted": 2071200,
+            "delay": 934113.6,
+            "jitter": 0.002,
+            "targetDelay": 1040448,
+            "minimumDelay": 600000,
+            "inserted": 17712,
+            "removed": 13392,
+            "contextState": "running",
+            "contextTime": 44.04266666666667,
+            "target": 600
+          },
+          "received": 1203,
+          "lost": -2,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 538.0217028380634,
+          "audioEnergy": 0.7624994267429592,
+          "decodedStereo": [
+            [
+              0.24965794690148627,
+              0.003637588021144048
+            ],
+            [
+              0.003649652936918244,
+              0.2513929787524671
+            ]
+          ]
+        },
+        {
+          "name": "recovery",
+          "seconds": 16,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1625,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 3,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 4392,
+            "lost": 5,
+            "concealed": 4895,
+            "samples": 2079840,
+            "nacks": 1269,
+            "energy": 2.7667191459138203,
+            "emitted": 2071200,
+            "delay": 934113.6,
+            "jitter": 0.002,
+            "targetDelay": 1040448,
+            "minimumDelay": 600000,
+            "inserted": 17712,
+            "removed": 13392,
+            "contextState": "running",
+            "contextTime": 44.06933333333333,
+            "target": 600
+          },
+          "after": {
+            "received": 6012,
+            "lost": 0,
+            "concealed": 4895,
+            "samples": 2851680,
+            "nacks": 1272,
+            "energy": 3.7910589441637668,
+            "emitted": 2847840,
+            "delay": 1416340.8,
+            "jitter": 0.002,
+            "targetDelay": 1502544,
+            "minimumDelay": 766512,
+            "inserted": 17712,
+            "removed": 18288,
+            "contextState": "running",
+            "contextTime": 60.12533333333333,
+            "target": 580
+          },
+          "received": 1620,
+          "lost": -5,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 620.9147095179235,
+          "audioEnergy": 1.0243397982499465,
+          "decodedStereo": [
+            [
+              0.2497113444847896,
+              0.004238123066005678
+            ],
+            [
+              0.004241803830649225,
+              0.25156586193514824
+            ]
+          ]
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 nack",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": [
+          "a=rtcp-fb:111 nack"
+        ]
+      },
+      "errors": [],
+      "format": "VST3",
+      "measurementWindowsPerPhase": 1
+    },
+    {
+      "result": "PASS",
+      "engine": "webkit",
+      "profile": "combined",
+      "badStart": true,
+      "warmupSeconds": 4.015,
+      "productionNegotiation": true,
+      "phases": [
+        {
+          "name": "impaired-start",
+          "seconds": 8,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 1401,
+          "actualDroppedDatagrams": 151,
+          "actuallyRecoveredDatagrams": 117,
+          "actuallyDelayedDatagrams": 250,
+          "before": {
+            "received": 390,
+            "lost": 4,
+            "concealed": 1920,
+            "samples": 160320,
+            "nacks": 104,
+            "energy": 0.22133200716514995,
+            "emitted": 163680,
+            "delay": 71908.8,
+            "jitter": 0.002,
+            "targetDelay": 52742.4,
+            "minimumDelay": 47875.2,
+            "inserted": 432,
+            "removed": 5328,
+            "contextState": "running",
+            "contextTime": 4.021333333333334,
+            "target": 300
+          },
+          "after": {
+            "received": 1193,
+            "lost": 2,
+            "concealed": 2256,
+            "samples": 544800,
+            "nacks": 313,
+            "energy": 0.7381270961642641,
+            "emitted": 549600,
+            "delay": 220233.6,
+            "jitter": 0.002,
+            "targetDelay": 213230.4,
+            "minimumDelay": 147801.6,
+            "inserted": 2064,
+            "removed": 8640,
+            "contextState": "running",
+            "contextTime": 12.024,
+            "target": 600
+          },
+          "received": 803,
+          "lost": -2,
+          "concealed": 336,
+          "concealmentPercent": 0.08739076154806492,
+          "intervalBufferMs": 384.3407960199005,
+          "audioEnergy": 0.5167950889991142,
+          "decodedWindows": [
+            [
+              {
+                "tones": [
+                  0.24951932016289846,
+                  0.0030530820759307894
+                ],
+                "rms": 0.17656880914792408,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.00014714045727576367,
+                  0.09216650338815313
+                ],
+                "rms": 0.17220061857786914,
+                "peakHz": 1500
+              }
+            ],
+            [
+              {
+                "tones": [
+                  0.24998265879744716,
+                  0.002964138315722899
+                ],
+                "rms": 0.17684383919319288,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.0030494495868059694,
+                  0.24769358162558924
+                ],
+                "rms": 0.1752047034298575,
+                "peakHz": 1500
+              }
+            ],
+            [
+              {
+                "tones": [
+                  0.24966407012754005,
+                  0.0035819682155520055
+                ],
+                "rms": 0.1766100920438109,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.0011169724479569085,
+                  0.12259251114949579
+                ],
+                "rms": 0.17231902470086718,
+                "peakHz": 1500
+              }
+            ]
+          ]
+        },
+        {
+          "name": "adaptation",
+          "seconds": 20,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 3578,
+          "actualDroppedDatagrams": 372,
+          "actuallyRecoveredDatagrams": 288,
+          "actuallyDelayedDatagrams": 639,
+          "before": {
+            "received": 1231,
+            "lost": 4,
+            "concealed": 2256,
+            "samples": 564480,
+            "nacks": 325,
+            "energy": 0.7646613897515189,
+            "emitted": 568800,
+            "delay": 228009.6,
+            "jitter": 0.002,
+            "targetDelay": 224750.4,
+            "minimumDelay": 152793.6,
+            "inserted": 3072,
+            "removed": 8640,
+            "contextState": "running",
+            "contextTime": 12.437333333333333,
+            "target": 600
+          },
+          "after": {
+            "received": 3232,
+            "lost": 4,
+            "concealed": 2256,
+            "samples": 1524480,
+            "nacks": 904,
+            "energy": 2.0605217717721436,
+            "emitted": 1522080,
+            "delay": 730905.6,
+            "jitter": 0.003,
+            "targetDelay": 792878.4,
+            "minimumDelay": 379315.2,
+            "inserted": 8880,
+            "removed": 8640,
+            "contextState": "running",
+            "contextTime": 32.44266666666667,
+            "target": 600
+          },
+          "received": 2001,
+          "lost": 0,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 527.5427995971803,
+          "audioEnergy": 1.2958603820206247,
+          "decodedWindows": [
+            [
+              {
+                "tones": [
+                  0.2501231828072045,
+                  0.0034882193046609725
+                ],
+                "rms": 0.17688751909942071,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.002954590502474088,
+                  0.24862318109889994
+                ],
+                "rms": 0.17586541788911972,
+                "peakHz": 1500
+              }
+            ],
+            [
+              {
+                "tones": [
+                  0.24972363633118894,
+                  0.003995876887314894
+                ],
+                "rms": 0.1765459051299722,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.004337672962418941,
+                  0.2500008760505822
+                ],
+                "rms": 0.17672885773310618,
+                "peakHz": 1500
+              }
+            ],
+            [
+              {
+                "tones": [
+                  0.25036232393573743,
+                  0.004259439479257289
+                ],
+                "rms": 0.17696256103532948,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.0030239421103250524,
+                  0.248119889169112
+                ],
+                "rms": 0.17550051593690957,
+                "peakHz": 1500
+              }
+            ]
+          ]
+        },
+        {
+          "name": "impaired",
+          "seconds": 12,
+          "emulatedLossPercent": 10,
+          "emulatedBurstDelayMs": 350,
+          "emulatedOneWayDelayMs": 80,
+          "actualMediaDatagrams": 2124,
+          "actualDroppedDatagrams": 206,
+          "actuallyRecoveredDatagrams": 151,
+          "actuallyDelayedDatagrams": 383,
+          "before": {
+            "received": 3274,
+            "lost": 4,
+            "concealed": 2256,
+            "samples": 1545600,
+            "nacks": 919,
+            "energy": 2.0890173226317934,
+            "emitted": 1543200,
+            "delay": 742425.6,
+            "jitter": 0.003,
+            "targetDelay": 805550.4,
+            "minimumDelay": 383961.6,
+            "inserted": 8880,
+            "removed": 8640,
+            "contextState": "running",
+            "contextTime": 32.882666666666665,
+            "target": 600
+          },
+          "after": {
+            "received": 4478,
+            "lost": 5,
+            "concealed": 2256,
+            "samples": 2122080,
+            "nacks": 1262,
+            "energy": 2.867190312740514,
+            "emitted": 2120640,
+            "delay": 1056014.4,
+            "jitter": 0.002,
+            "targetDelay": 1151083.2,
+            "minimumDelay": 511104,
+            "inserted": 8880,
+            "removed": 9360,
+            "contextState": "running",
+            "contextTime": 44.904,
+            "target": 580
+          },
+          "received": 1204,
+          "lost": 1,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 543.0673316708228,
+          "audioEnergy": 0.7781729901087204,
+          "decodedWindows": [
+            [
+              {
+                "tones": [
+                  0.25045558728975387,
+                  0.003547938754112334
+                ],
+                "rms": 0.17712205607149903,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.0027698951526573283,
+                  0.24922182291897
+                ],
+                "rms": 0.17629556878622732,
+                "peakHz": 1500
+              }
+            ],
+            [
+              {
+                "tones": [
+                  0.2499670267548427,
+                  0.0040442809651088495
+                ],
+                "rms": 0.1767181171481896,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.004213416935646211,
+                  0.2499706994018311
+                ],
+                "rms": 0.1767208026914266,
+                "peakHz": 1500
+              }
+            ],
+            [
+              {
+                "tones": [
+                  0.24972407768702473,
+                  0.003138358104015324
+                ],
+                "rms": 0.1766431563276018,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.003482721918035443,
+                  0.24944633616495349
+                ],
+                "rms": 0.1764046411253636,
+                "peakHz": 1500
+              }
+            ]
+          ]
+        },
+        {
+          "name": "recovery",
+          "seconds": 16,
+          "emulatedLossPercent": 0,
+          "emulatedBurstDelayMs": 0,
+          "emulatedOneWayDelayMs": 0,
+          "actualMediaDatagrams": 1620,
+          "actualDroppedDatagrams": 0,
+          "actuallyRecoveredDatagrams": 3,
+          "actuallyDelayedDatagrams": 0,
+          "before": {
+            "received": 4519,
+            "lost": 4,
+            "concealed": 2256,
+            "samples": 2141280,
+            "nacks": 1275,
+            "energy": 2.8930788545242683,
+            "emitted": 2139840,
+            "delay": 1066257.6,
+            "jitter": 0.002,
+            "targetDelay": 1162219.2,
+            "minimumDelay": 515328,
+            "inserted": 8880,
+            "removed": 9360,
+            "contextState": "running",
+            "contextTime": 45.312,
+            "target": 580
+          },
+          "after": {
+            "received": 6132,
+            "lost": 0,
+            "concealed": 2256,
+            "samples": 2909760,
+            "nacks": 1277,
+            "energy": 3.9303476775390807,
+            "emitted": 2913120,
+            "delay": 1527715.2,
+            "jitter": 0.002,
+            "targetDelay": 1605576,
+            "minimumDelay": 664022.4,
+            "inserted": 8880,
+            "removed": 14112,
+            "contextState": "running",
+            "contextTime": 61.31466666666667,
+            "target": 560
+          },
+          "received": 1613,
+          "lost": -4,
+          "concealed": 0,
+          "concealmentPercent": 0,
+          "intervalBufferMs": 596.7535692116696,
+          "audioEnergy": 1.0372688230148124,
+          "decodedWindows": [
+            [
+              {
+                "tones": [
+                  0.2504721224604177,
+                  0.0032564782532058974
+                ],
+                "rms": 0.17715260708975789,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.002839127065271201,
+                  0.2494918480768423
+                ],
+                "rms": 0.17648450404497554,
+                "peakHz": 1500
+              }
+            ],
+            [
+              {
+                "tones": [
+                  0.24985485511361571,
+                  0.0037918693951297247
+                ],
+                "rms": 0.17665845565255953,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.004183284615545513,
+                  0.24962561817283707
+                ],
+                "rms": 0.17647364121827946,
+                "peakHz": 1500
+              }
+            ],
+            [
+              {
+                "tones": [
+                  0.24962393991622933,
+                  0.004267047387823451
+                ],
+                "rms": 0.17645091234289972,
+                "peakHz": 1007.8125
+              },
+              {
+                "tones": [
+                  0.0034359931065092524,
+                  0.24960143017802103
+                ],
+                "rms": 0.17652398340793424,
+                "peakHz": 1500
+              }
+            ]
+          ]
+        }
+      ],
+      "feedback": {
+        "connections": [
+          "connecting",
+          "connected"
+        ],
+        "offer": [
+          "a=rtcp-fb:111 nack",
+          "a=rtcp-fb:111 transport-cc"
+        ],
+        "answer": [
+          "a=rtcp-fb:111 nack"
+        ]
+      },
+      "errors": [],
+      "format": "AU",
+      "measurementWindowsPerPhase": 3
+    }
+  ],
+  "recoveryProfiles": [
+    {
+      "result": "PASS",
+      "version": "0.1.6",
+      "engine": "chromium",
+      "inputSampleRate": 48000,
+      "blockFrames": 256,
+      "decoded": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17676324287050293,
+            "tone997": 0.25003044168609656,
+            "tone1499": 0.004321267984862511,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17765365370839958,
+            "tone997": 0.0040468574939632775,
+            "tone1499": 0.25128374301698675,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.17676324287050293,
+              "tone997": 0.25003044168609656,
+              "tone1499": 0.004321267984862511,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.1734715000757818,
+              "tone997": 0.0016460565404340067,
+              "tone1499": 0.15604878301589117,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17645523160245613,
+              "tone997": 0.24955725897997355,
+              "tone1499": 0.0037798224413457993,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17302208013119438,
+              "tone997": 0.00040682305971531354,
+              "tone1499": 0.23336646280513124,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17639355355867342,
+              "tone997": 0.24934474327492867,
+              "tone1499": 0.0028557900151785663,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17765365370839958,
+              "tone997": 0.0040468574939632775,
+              "tone1499": 0.25128374301698675,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 5.930666666666666
+      },
+      "afterRecovery": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17671993780754014,
+            "tone997": 0.24995722914178456,
+            "tone1499": 0.004216139827003057,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.1774164873175811,
+            "tone997": 0.002943380518297822,
+            "tone1499": 0.2508252330545083,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.17671993780754014,
+              "tone997": 0.24995722914178456,
+              "tone1499": 0.004216139827003057,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17335227944353843,
+              "tone997": 0.0012483863138069173,
+              "tone1499": 0.13457833286702822,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17667477350284194,
+              "tone997": 0.24977006357248097,
+              "tone1499": 0.0031002484674944116,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.1774164873175811,
+              "tone997": 0.002943380518297822,
+              "tone1499": 0.2508252330545083,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.1766276981664022,
+              "tone997": 0.24964163224916117,
+              "tone1499": 0.0033569274548476812,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17355534755250604,
+              "tone997": 0.001176441824844725,
+              "tone1499": 0.006546467354797221,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 8.981333333333334
+      },
+      "afterLongOutage": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17652951397619351,
+            "tone997": 0.24962459931826964,
+            "tone1499": 0.0038351567561683646,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17714500677819983,
+            "tone997": 0.0030740770869031805,
+            "tone1499": 0.2504470365110615,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.17600703672906104,
+              "tone997": 0.24888710715822301,
+              "tone1499": 0.0035387345358765423,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17714500677819983,
+              "tone997": 0.0030740770869031805,
+              "tone1499": 0.2504470365110615,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17652951397619351,
+              "tone997": 0.24962459931826964,
+              "tone1499": 0.0038351567561683646,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17283897056988712,
+              "tone997": 0.0006270352054641496,
+              "tone1499": 0.16608972721561494,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17655070086123575,
+              "tone997": 0.24948806225073494,
+              "tone1499": 0.002902320662668091,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.1736228702312989,
+              "tone997": 0.001694211977829755,
+              "tone1499": 0.10318946252580641,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 21.552
+      },
+      "selectedIce": {
+        "candidateType": "host",
+        "protocol": "udp",
+        "remoteAddressMatchesAdvertised": true
+      },
+      "packets": 598,
+      "stereoPackets": 598,
+      "reconnects": 3,
+      "automaticRecovery": true,
+      "pairingRejection": true,
+      "autoplayFallback": true,
+      "format": "VST3",
+      "stopCancelsTransmission": true
+    },
+    {
+      "result": "PASS",
+      "version": "0.1.6",
+      "engine": "webkit",
+      "inputSampleRate": 48000,
+      "blockFrames": 256,
+      "decoded": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17713297206734738,
+            "tone997": 0.25042565988511456,
+            "tone1499": 0.0031333301927527826,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17737259819473428,
+            "tone997": 0.0034558514127859823,
+            "tone1499": 0.250817132723671,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.17713297206734738,
+              "tone997": 0.25042565988511456,
+              "tone1499": 0.0031333301927527826,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17721708064646108,
+              "tone997": 0.004153762226914882,
+              "tone1499": 0.2506776853172407,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.1770853518733445,
+              "tone997": 0.25035357007411946,
+              "tone1499": 0.00377032431693639,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17349935858954893,
+              "tone997": 0.001661316228584302,
+              "tone1499": 0.05606889468878825,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17684439988047793,
+              "tone997": 0.25014951552393144,
+              "tone1499": 0.004005016049343446,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17737259819473428,
+              "tone997": 0.0034558514127859823,
+              "tone1499": 0.250817132723671,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 5.917333333333334
+      },
+      "afterRecovery": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17665096824857937,
+            "tone997": 0.2499074661492108,
+            "tone1499": 0.0041941366623096535,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17748604768476547,
+            "tone997": 0.003157347954036119,
+            "tone1499": 0.2509451083241745,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.17665096824857937,
+              "tone997": 0.2499074661492108,
+              "tone1499": 0.0041941366623096535,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17713333501540549,
+              "tone997": 0.0038876992597846843,
+              "tone1499": 0.2505264986320537,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17661093278839826,
+              "tone997": 0.24981808084730087,
+              "tone1499": 0.00434693551147144,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.1734528694208878,
+              "tone997": 0.0014360442461771713,
+              "tone1499": 0.17189721834951333,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.1763431348737375,
+              "tone997": 0.2493620750016103,
+              "tone1499": 0.0034970933360427285,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17748604768476547,
+              "tone997": 0.003157347954036119,
+              "tone1499": 0.2509451083241745,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 9.013333333333334
+      },
+      "afterLongOutage": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17651543676496417,
+            "tone997": 0.24972451568832998,
+            "tone1499": 0.004224907250542745,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17738329598591482,
+            "tone997": 0.003122809124132842,
+            "tone1499": 0.2508073002543385,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.17651543676496417,
+              "tone997": 0.24972451568832998,
+              "tone1499": 0.004224907250542745,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17724974098205865,
+              "tone997": 0.0028096946122287054,
+              "tone1499": 0.2505826293185637,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17655471196479214,
+              "tone997": 0.24967240703781488,
+              "tone1499": 0.004098342311188529,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17349748039773372,
+              "tone997": 0.0016695370143562588,
+              "tone1499": 0.13152492191294946,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17652173997895657,
+              "tone997": 0.24964961535488853,
+              "tone1499": 0.0037552606630965025,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17738329598591482,
+              "tone997": 0.003122809124132842,
+              "tone1499": 0.2508073002543385,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 21.810666666666666
+      },
+      "selectedIce": {
+        "candidateType": "host",
+        "protocol": "udp"
+      },
+      "packets": 592,
+      "stereoPackets": 592,
+      "reconnects": 3,
+      "automaticRecovery": true,
+      "pairingRejection": true,
+      "autoplayFallback": true,
+      "format": "VST3",
+      "stopCancelsTransmission": true
+    },
+    {
+      "result": "PASS",
+      "version": "0.1.6",
+      "engine": "chromium",
+      "inputSampleRate": 48000,
+      "blockFrames": 256,
+      "decoded": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17697389222773385,
+            "tone997": 0.25028774363663253,
+            "tone1499": 0.0037417431826035643,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.1778894943552876,
+            "tone997": 0.0042643544961109775,
+            "tone1499": 0.25163937957374366,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.17666488947359546,
+              "tone997": 0.24973195126888095,
+              "tone1499": 0.0028911910317617148,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17772343580421524,
+              "tone997": 0.004327982364517213,
+              "tone1499": 0.2514165018840536,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.1764762902031165,
+              "tone997": 0.24940171080080592,
+              "tone1499": 0.0028754489871774,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17295697023446174,
+              "tone997": 0.0013003687662109758,
+              "tone1499": 0.052694432273700666,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17697389222773385,
+              "tone997": 0.25028774363663253,
+              "tone1499": 0.0037417431826035643,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.1778894943552876,
+              "tone997": 0.0042643544961109775,
+              "tone1499": 0.25163937957374366,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 5.925333333333334
+      },
+      "afterRecovery": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17664905718035467,
+            "tone997": 0.24975124355322284,
+            "tone1499": 0.003859622023056097,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17760782287977706,
+            "tone997": 0.0039639783576202415,
+            "tone1499": 0.2512048529578272,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.17662722805768144,
+              "tone997": 0.24963809086196564,
+              "tone1499": 0.0031327219182498795,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17298516641192538,
+              "tone997": 0.0011768800591538224,
+              "tone1499": 0.13560005001957443,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.1765349106000368,
+              "tone997": 0.24963571527461922,
+              "tone1499": 0.0035228662596267176,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17760782287977706,
+              "tone997": 0.0039639783576202415,
+              "tone1499": 0.2512048529578272,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17664905718035467,
+              "tone997": 0.24975124355322284,
+              "tone1499": 0.003859622023056097,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.1733211808596008,
+              "tone997": 0.0012227181112587514,
+              "tone1499": 0.006258476149962492,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 8.922666666666666
+      },
+      "afterLongOutage": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17692198789694513,
+            "tone997": 0.25012747047109785,
+            "tone1499": 0.003782386421633656,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17294902744517301,
+            "tone997": 0.0011306908818220476,
+            "tone1499": 0.22957492716760983,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.1769036642109303,
+              "tone997": 0.25005514528699857,
+              "tone1499": 0.002961531222891217,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17340229628428014,
+              "tone997": 0.0016323581342114805,
+              "tone1499": 0.22512780766104623,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17642626827753286,
+              "tone997": 0.2495415604379754,
+              "tone1499": 0.004213561715091223,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17294902744517301,
+              "tone997": 0.0011306908818220476,
+              "tone1499": 0.22957492716760983,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17692198789694513,
+              "tone997": 0.25012747047109785,
+              "tone1499": 0.003782386421633656,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.173032424190233,
+              "tone997": 0.001284877376396248,
+              "tone1499": 0.04185553266498218,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 21.509333333333334
+      },
+      "selectedIce": {
+        "candidateType": "host",
+        "protocol": "udp",
+        "remoteAddressMatchesAdvertised": true
+      },
+      "packets": 596,
+      "stereoPackets": 596,
+      "reconnects": 3,
+      "automaticRecovery": true,
+      "pairingRejection": true,
+      "autoplayFallback": true,
+      "format": "AU",
+      "stopCancelsTransmission": true
+    },
+    {
+      "result": "PASS",
+      "version": "0.1.6",
+      "engine": "webkit",
+      "inputSampleRate": 48000,
+      "blockFrames": 256,
+      "decoded": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17695829341032168,
+            "tone997": 0.2502673144705772,
+            "tone1499": 0.003725633785968452,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17746615428669033,
+            "tone997": 0.0029459587385490924,
+            "tone1499": 0.2508998910083714,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.17695829341032168,
+              "tone997": 0.2502673144705772,
+              "tone1499": 0.003725633785968452,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17746615428669033,
+              "tone997": 0.0029459587385490924,
+              "tone1499": 0.2508998910083714,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.1766018401349372,
+              "tone997": 0.2496281031538228,
+              "tone1499": 0.0034423365033912747,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.1734954053810343,
+              "tone997": 0.0012442667148775694,
+              "tone1499": 0.08829288244298913,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.1764996242781024,
+              "tone997": 0.2497111931118171,
+              "tone1499": 0.0043034502342527,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.1771759600642702,
+              "tone997": 0.0030074182881004267,
+              "tone1499": 0.2504914641634198,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 5.917333333333334
+      },
+      "afterRecovery": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17737702426214078,
+            "tone997": 0.25081104177076735,
+            "tone1499": 0.0040731905470367084,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.17770120339085912,
+            "tone997": 0.0037967672418256597,
+            "tone1499": 0.2513158625151793,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.17665910123042794,
+              "tone997": 0.24973333652000496,
+              "tone1499": 0.0029536394989182423,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17719185184285585,
+              "tone997": 0.003047616736687461,
+              "tone1499": 0.250517763968565,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17737702426214078,
+              "tone997": 0.25081104177076735,
+              "tone1499": 0.0040731905470367084,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17271841410761718,
+              "tone997": 0.0016660367236389548,
+              "tone1499": 0.010786587692483536,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17661674788692694,
+              "tone997": 0.24977532962634033,
+              "tone1499": 0.003668672929993365,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17770120339085912,
+              "tone997": 0.0037967672418256597,
+              "tone1499": 0.2513158625151793,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 8.954666666666666
+      },
+      "afterLongOutage": {
+        "sampleRate": 48000,
+        "channels": [
+          {
+            "rms": 0.17704084056662614,
+            "tone997": 0.2504253140596589,
+            "tone1499": 0.004065858442453728,
+            "peakHz": 1007.8125
+          },
+          {
+            "rms": 0.1764245037897351,
+            "tone997": 0.00413913774659224,
+            "tone1499": 0.24954721406656458,
+            "peakHz": 1500
+          }
+        ],
+        "windows": [
+          [
+            {
+              "rms": 0.17704084056662614,
+              "tone997": 0.2504253140596589,
+              "tone1499": 0.004065858442453728,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17617597416511196,
+              "tone997": 0.0043175966962045375,
+              "tone1499": 0.24922181062890178,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.1765359193017037,
+              "tone997": 0.24959550201451164,
+              "tone1499": 0.0038093277690026735,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.17208034954968443,
+              "tone997": 0.0017752321666878858,
+              "tone1499": 0.13082292442112972,
+              "peakHz": 1500
+            }
+          ],
+          [
+            {
+              "rms": 0.17707610939627527,
+              "tone997": 0.25037734203704987,
+              "tone1499": 0.003412517975949284,
+              "peakHz": 1007.8125
+            },
+            {
+              "rms": 0.1764245037897351,
+              "tone997": 0.00413913774659224,
+              "tone1499": 0.24954721406656458,
+              "peakHz": 1500
+            }
+          ]
+        ],
+        "contextState": "running",
+        "elapsed": 21.717333333333332
+      },
+      "selectedIce": {
+        "candidateType": "host",
+        "protocol": "udp"
+      },
+      "packets": 592,
+      "stereoPackets": 592,
+      "reconnects": 3,
+      "automaticRecovery": true,
+      "pairingRejection": true,
+      "autoplayFallback": true,
+      "format": "AU",
+      "stopCancelsTransmission": true
+    }
+  ],
+  "robustness": {
+    "result": "PASS",
+    "decodedAudioChecked": true,
+    "fourReceivers": true,
+    "fifthRecoversWhenSlotFreed": true,
+    "bufferRespondsToLowJitterLoss": true,
+    "bufferRespondsToConcealment": true,
+    "bufferFallsAfterRecovery": true,
+    "pageCacheRestore": true,
+    "stalePauseIgnored": true,
+    "longOutageRecovery": true,
+    "liveRateChanges": [
+      192000,
+      44100,
+      48000
+    ],
+    "largeBlockFrames": 2048,
+    "idleSilence": true,
+    "activeShutdown": true
+  },
+  "healthyNetworkPerformance": {
+    "version": "0.1.6",
+    "inputSampleRate": 48000,
+    "baselineProcessCpuOneCorePercent": 1.6654435025042962,
+    "streamingProcessCpuOneCorePercent": 2.4983676465275235,
+    "incrementalStreamingCpuOneCorePercent": 0.8329241440232273,
+    "processRssMiB": 93.0625,
+    "workerWakeupsPerSecond": 348.0330241695755,
+    "receiver": {
+      "packets": 1400,
+      "loss": 0,
+      "jitterMs": 2,
+      "bufferMs": 377.4433893352812,
+      "targetMs": 300,
+      "minimumMs": 22.45434623813002,
+      "concealed": 0,
+      "inserted": 0,
+      "removed": 13536,
+      "audioEnergy": 0.8506920821923976,
+      "route": {
+        "protocol": "udp",
+        "localType": "prflx",
+        "remoteType": "host",
+        "roundTripMs": 0,
+        "remoteAddressMatchesAdvertised": true
+      },
+      "requestedTarget": 300,
+      "playoutHint": null,
+      "intervalBufferMs": 310.7333333333334,
+      "intervalPackets": 599,
+      "intervalLoss": 0,
+      "intervalConcealed": 0,
+      "intervalAudioEnergy": 0.38127960500207775
+    },
+    "sender": {
+      "name": "MConnect",
+      "version": "0.1.6",
+      "sampleRate": 48000,
+      "bitrate": 320000,
+      "listeners": 1,
+      "frameMs": 10,
+      "senderQueueMs": 0,
+      "sourceBlockMs": 5.333333333333333,
+      "bufferMs": 30,
+      "packetsSent": 1404,
+      "droppedFrames": 0,
+      "stereoPackets": 1404,
+      "workerWakeups": 4912,
+      "backlogDiscardedFrames": 0,
+      "conversionErrors": 0,
+      "encodeErrors": 0,
+      "connectionState": "connected",
+      "iceState": "completed",
+      "peakL": 0.177040089829603,
+      "peakR": 0.176753218831996
+    }
+  },
+  "weakNetworkPerformance": {
+    "profile": "webkit-loss",
+    "caseAgeAtStartSeconds": 18.873116731643677,
+    "measurementSeconds": 10.016798208002001,
+    "sourceProcessCpuOneCorePercent": 3.3942981873028857,
+    "sourceProcessIncludesSoftwareToneGenerator": true,
+    "rssMiB": 27.484375,
+    "senderDeltas": {
+      "packetsSent": 1002,
+      "stereoPackets": 1002,
+      "workerWakeups": 3640,
+      "backlogDiscardedFrames": 0,
+      "encodeErrors": 0,
+      "conversionErrors": 0,
+      "droppedFrames": 0
+    },
+    "senderQueueMs": 5.333333333333333
+  },
+  "pluginval": {
+    "result": "PASS",
+    "strictness": 10,
+    "sampleRates": [
+      48000,
+      192000
+    ],
+    "blockSizes": [
+      256,
+      2048
+    ],
+    "repeat": 2,
+    "randomSeed": 101019,
+    "format": "VST3",
+    "exitCode": 0
+  },
+  "interpretation": {
+    "settledAndRecoveryConcealmentPercentMax": 0,
+    "adaptationConcealmentPercentMax": 0.755872063968016,
+    "concealmentIsNotAnAudibleClickCount": true,
+    "originalEightVst3ProfilesUseSingleCorrelationWindow": true,
+    "auAndRecoveryUseThreeWindowsWithEnergySpectrumAndCrosstalkChecks": true
+  },
+  "limitations": {
+    "physicalIphoneSafari": "DEFERRED_BY_USER",
+    "physicalWeakRouter": "NOT_TESTED",
+    "android": "NOT_TESTED",
+    "windowsLinux": "NOT_TESTED",
+    "arbitrarilyBadNetworks": "NOT_GUARANTEED"
+  }
+}

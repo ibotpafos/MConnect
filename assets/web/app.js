@@ -15,10 +15,13 @@
   const $ = (id) => document.getElementById(id);
   const audio = $("audio"), button = $("listen"), stopButton = $("stop");
   const token = location.hash.slice(1);
+  // Leave time for a LAN retransmission; trade more latency for continuity
+  // automatically when a receiver reports loss or late audio.
+  const minimumBuffer = 300, maximumBuffer = 600;
   let peer = null, socket = null, generation = 0, mode = "idle";
   let timer = null, timeout = null, statsBusy = false, reconnectTimer = null;
   let wantsAudio = false, retryAttempts = 0, receiverForBuffer = null, lastBuffer = null;
-  let previousReport = null, healthySince = 0, autoBuffer = 30, lastPacketTime = 0;
+  let previousReport = null, healthySince = 0, autoBuffer = minimumBuffer, lastPacketTime = 0;
   let statsAbort = null, suspendedIntent = false, sentReady = null, playAttempt = 0;
   let messageChain = Promise.resolve(), candidates = [], localCandidates = [], offerSent = false;
   const paired = /^[a-f0-9]{32}$/i.test(token);
@@ -48,7 +51,7 @@
     audio.pause(); audio.srcObject = null; audio.hidden = true;
     candidates = []; localCandidates = []; offerSent = false; statsBusy = false;
     receiverForBuffer = lastBuffer = null;
-    previousReport = null; healthySince = lastPacketTime = 0; autoBuffer = 30; sentReady = null;
+    previousReport = null; healthySince = lastPacketTime = 0; autoBuffer = minimumBuffer; sentReady = null;
     $("details").hidden = true;
     $("leftMeter").style.transform = $("rightMeter").style.transform = "scaleX(0)";
   }
@@ -105,15 +108,21 @@
     });
   }
   function stereo(sdp) {
-    const match = sdp.match(/^a=rtpmap:(\d+) opus\/48000(?:\/2)?\r?$/mi);
+    const lines = sdp.split(/\r?\n/);
+    const codec = lines.findIndex((line) => /^a=rtpmap:\d+ opus\/48000(?:\/2)?$/i.test(line));
+    const match = codec >= 0 && lines[codec].match(/^a=rtpmap:(\d+)/);
     if (!match) throw new Error("Opus unavailable");
     const pt = match[1];
-    const expression = new RegExp("^a=fmtp:" + pt + " (.*)$", "m");
-    const old = sdp.match(expression);
-    const params = (old ? old[1].trim().split(";") : []).filter((value) => !/^(stereo|sprop-stereo|maxaveragebitrate)=/.test(value));
+    const fmtp = lines.findIndex((line) => line.startsWith("a=fmtp:" + pt + " "));
+    const params = (fmtp >= 0 ? lines[fmtp].split(" ").slice(1).join(" ").trim().split(";") : []).filter((value) => !/^(stereo|sprop-stereo|maxaveragebitrate)=/.test(value));
     params.push("stereo=1", "sprop-stereo=1", "maxaveragebitrate=510000");
     const line = "a=fmtp:" + pt + " " + params.join(";");
-    return old ? sdp.replace(expression, line) : sdp.replace(match[0], match[0].trim() + "\r\n" + line);
+    if (fmtp >= 0) lines[fmtp] = line; else lines.splice(codec + 1, 0, line);
+    // Browsers implement audio NACK but do not all offer it by default. The
+    // sender answers only this offered capability; older senders still work.
+    const nack = "a=rtcp-fb:" + pt + " nack";
+    if (!lines.includes(nack)) lines.splice(codec + 1, 0, nack);
+    return lines.join("\r\n");
   }
   async function poll(mine) {
     if (mine !== generation || !peer || statsBusy) return;
@@ -130,6 +139,11 @@
       }
       const reports = await peer.getStats();
       if (mine !== generation) return;
+      let roundTripMs = 0;
+      reports.forEach((report) => {
+        if (report.type === "candidate-pair" && report.state === "succeeded" && (report.nominated || report.selected)
+            && Number.isFinite(report.currentRoundTripTime)) roundTripMs = Math.max(roundTripMs,report.currentRoundTripTime*1000);
+      });
       reports.forEach((report) => {
         if (report.type !== "inbound-rtp" || (report.kind || report.mediaType) !== "audio") return;
         const received = report.packetsReceived || 0, lost = Math.max(0, report.packetsLost || 0);
@@ -140,16 +154,17 @@
         const lossRatio = newLoss / Math.max(1,newPackets+newLoss);
         const concealRatio = before ? Math.max(0,concealed-before.concealed) / Math.max(1,samples-before.samples) : 0;
         const impaired = lossRatio > .01 || concealRatio > .01;
-        const networkMinimum = Math.ceil(Math.max(details.bufferMs || 30,(report.jitter || 0)*3000));
-        // Loss/concealment must raise the current target even when jitter is
-        // small. Adding a penalty inside Math.max could leave it at 30 ms.
-        const wanted = Math.min(180,impaired ? Math.max(networkMinimum,autoBuffer+20) : networkMinimum);
+        const networkMinimum = Math.ceil(Math.max(minimumBuffer,details.bufferMs || 0,(report.jitter || 0)*4000,roundTripMs+40));
+        // Grow quickly on late/missing audio, including loss with low jitter.
+        // Hold the reserve through short improvements instead of oscillating.
+        const wanted = Math.min(maximumBuffer,impaired ? Math.max(networkMinimum,autoBuffer+80,autoBuffer*1.5) : networkMinimum);
         const now = performance.now();
         if (newPackets > 0) lastPacketTime = now;
-        if (wanted > autoBuffer+5) { autoBuffer = wanted; healthySince = 0; }
+        if (impaired) healthySince = 0;
+        if (wanted > autoBuffer+5) { autoBuffer = Math.ceil(wanted); healthySince = 0; }
         else if (newPackets > 0 && !impaired) {
           if (!healthySince) healthySince = now;
-          if (now-healthySince >= 8000) { autoBuffer = Math.max(wanted,autoBuffer-10); healthySince = now; retryAttempts = 0; }
+          if (now-healthySince >= 12000) { autoBuffer = Math.max(wanted,autoBuffer-20); healthySince = now; retryAttempts = 0; }
         } else healthySince = 0;
         const intervalDelay = before && emitted > before.emitted ? 1000*(delay-before.delay)/(emitted-before.emitted) : null;
         previousReport = {id:report.id,received,lost,emitted,delay,concealed,samples};
@@ -180,7 +195,7 @@
         if (mine !== generation) return;
         audio.srcObject = event.streams[0] || new MediaStream([event.track]);
         receiverForBuffer = event.receiver;
-        applyBuffer(30);
+        applyBuffer(autoBuffer);
         if (currentPeer.connectionState === "connected") play();
       };
       peer.onconnectionstatechange = () => {

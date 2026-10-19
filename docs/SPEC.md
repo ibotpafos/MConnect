@@ -67,9 +67,23 @@ is denied. Media is gated until playback is requested, avoiding queued audio bef
 the user's tap. A broken session keeps retrying while listening is requested,
 with backoff capped at 10 seconds. Stop cancels retries. Stale events, abandoned
 HTTP requests and restored page-cache sessions cannot disable a newer session.
-The page starts with a 30 ms receiver-buffer hint and adjusts for jitter, loss and
-concealment using interval statistics when the browser supports the API. Hints are not guaranteed
-end-to-end latency and the browser can impose a larger buffer.
+The page offers generic Opus NACK. The sender answers only feedback offered for
+that audio payload and reuses libdatachannel's bounded 512-packet RTP cache;
+retransmissions do not re-encode audio or run on the DAW callback. Receivers that
+do not offer NACK continue to work without the cache.
+After playback becomes ready, an NACK receiver gets a bounded 600 ms startup
+reserve of encoded frames, sent in order before regular pacing. This seeds the
+browser's actual packet buffer even if the link is already lossy when connecting.
+The queue is preallocated per peer, limited to 60 packets of at most 4096 bytes,
+and cancelled on Stop/readiness loss or source discontinuity. It runs only on the
+network worker and adds a short startup wait, without delaying the DAW signal.
+The page starts with a 300 ms receiver-buffer hint and automatically grows it up
+to 600 ms for jitter, round-trip time, loss and concealment, using interval
+statistics. Growth is fast; reduction is limited to 20 ms after 12 seconds of
+healthy audio. No buffer or network controls are exposed. When supported it uses
+`jitterBufferTarget`, falling back to `playoutDelayHint` and then the browser's
+own buffering. These hints do not guarantee end-to-end latency or uninterrupted
+audio on an arbitrarily poor network.
 Signaling rejects malformed, oversized, fragmented, binary and deeply nested
 JSON messages. Concurrent offers cannot exceed four native peers.
 

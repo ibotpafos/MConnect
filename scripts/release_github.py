@@ -42,7 +42,7 @@ def prepare():
     notes = (f"macOS 11+, Apple Silicon and Intel. AU + VST3.\n\n"
              f"{match.group(1).strip()}\n\n"
              "Install the .pkg for your macOS account with your DAW closed. "
-             "This build uses ad-hoc plugin signatures and is not notarized by Apple.\n\n"
+             "Plugin signatures are verified; this build is not notarized by Apple.\n\n"
              "AGPL-3.0-only. Corresponding source and third-party notices are included.\n")
     print(f"Repository: https://github.com/{repository}\nTag: {tag}\nAssets:")
     for path in files:

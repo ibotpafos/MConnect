@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.9 — 2026-10-19
+
+- Negotiate Opus NACK and retransmit cached RTP packets without re-encoding audio.
+- Seed a bounded encoded-audio reserve when playback starts so already lossy links can build a real receiver buffer.
+- Automatically adapt the phone receiver's buffer from 300 to 600 ms using jitter, round-trip time, loss and concealment, without new controls.
+- Add real UDP loss/jitter tests with decoded stereo and feedback-negotiation compatibility checks.
+- Preserve the published Link name, GD Connect manufacturer and existing AU/VST3 identities.
+- Include the pinned GD Kit editor theme and preserve existing verified signatures when packaging.
+
+Versions 0.1.6–0.1.8 were distributed through the GD Connect channel for the
+manufacturer, persistent beta signature and Link display name. Version 0.1.9
+continues that sequence in both the product repository and the shared channel.
+
 ## 0.1.5 — 2026-10-18
 
 - Centralize plugin updates in GD Connect; remove in-plugin checks, downloads and Installer prompts.

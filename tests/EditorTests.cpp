@@ -30,7 +30,8 @@ int main()
                 const auto file = juce::File::getCurrentWorkingDirectory().getChildFile("output/editor/editor.png");
                 require(file.getParentDirectory().createDirectory().wasOk(), "cannot create snapshot directory");
                 auto output = file.createOutputStream();
-                require(output != nullptr && juce::PNGImageFormat().writeImageToStream(image, *output),
+                require(output != nullptr && output->setPosition(0) && output->truncate().wasOk()
+                            && juce::PNGImageFormat().writeImageToStream(image, *output),
                         "editor screenshot failed");
             }
             const auto start = juce::Time::getMillisecondCounterHiRes();

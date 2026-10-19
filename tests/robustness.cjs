@@ -47,13 +47,14 @@ async function until(check,ms=20000){const deadline=Date.now()+ms;while(Date.now
    peer.getStats=async()=>{tick++;if(window.bufferProbeMode==='loss')lost+=4;if(window.bufferProbeMode==='conceal')concealed+=1920;return new Map([['buffer-regression',{type:'inbound-rtp',kind:'audio',id:'buffer-regression',packetsReceived:tick*200,packetsLost:lost,jitter:0,concealedSamples:concealed,totalSamplesReceived:tick*96000}]]);};
   });
   const bufferTarget=()=>p.evaluate(()=>{const receiver=window.testPeer.getReceivers()[0];return receiver.jitterBufferTarget??receiver.playoutDelayHint*1000;});
-  await until(async()=>(await bufferTarget())>=50,12000);
+  const initialTarget=await bufferTarget();
+  await until(async()=>(await bufferTarget())>=initialTarget+80,12000);
   stage='buffer reacts to concealment without packet loss';const lossTarget=await bufferTarget();
   await p.evaluate(()=>{window.bufferProbeMode='conceal';});
   await until(async()=>(await bufferTarget())>=lossTarget+20,8000);
   stage='buffer falls after healthy recovery';const raisedTarget=await bufferTarget();
   await p.evaluate(()=>{window.bufferProbeMode='healthy';});
-  await until(async()=>(await bufferTarget())<raisedTarget,14000);
+  await until(async()=>(await bufferTarget())<raisedTarget,18000);
   await p.evaluate(()=>{window.testPeer.getStats=window.bufferOriginalStats;delete window.bufferOriginalStats;delete window.bufferProbeMode;});
   // A page-cache restore must reconnect without a button press.
   stage='page cache restore';const before=await p.evaluate(()=>window.testSockets.length);

@@ -6,7 +6,7 @@ const {chromium} = require(process.env.MCONNECT_PLAYWRIGHT || "playwright");
 const sleep = ms => new Promise(resolve => setTimeout(resolve,ms));
 const rate = Number(process.argv[2] || 48000);
 const host = process.env.MCONNECT_TEST_HOST || path.resolve("build/MConnectHarness_artefacts/Release/MConnect test host.app/Contents/MacOS/MConnect test host");
-const temporary = fs.mkdtempSync(path.join(process.platform === "darwin" ? "/private/tmp" : os.tmpdir(),"mconnect-perf-"));
+const temporary = fs.mkdtempSync(path.join(os.tmpdir(),"mconnect-perf-"));
 const infoPath = path.join(temporary,"info.json");
 const source = spawn(host,["--no-editor","--rate",String(rate),"--seconds","120","--info",infoPath],{stdio:"ignore"});
 let browser;

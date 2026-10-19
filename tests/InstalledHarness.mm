@@ -3,6 +3,7 @@
 #include <juce_gui_extra/juce_gui_extra.h>
 #import <Cocoa/Cocoa.h>
 #import <Vision/Vision.h>
+#include <AudioToolbox/AudioToolbox.h>
 #include <mach-o/dyld.h>
 #include <mach/task_policy.h>
 #include <chrono>
@@ -79,16 +80,19 @@ public:
         if (!plugin.isDirectory() || info == juce::File() || rate < 32000 || rate > 192000
             || block < 1 || block > 8192 || gain < 0 || gain > 0.25f)
             return fail("Expected --plugin bundle --info file and valid signal settings");
+        if (args.contains("--register-au") && !registerBuiltAudioUnit())
+            return fail("Cannot register the requested AU factory for this test process");
+        const auto identifier = auTestIdentifier.isEmpty() ? plugin.getFullPathName() : auTestIdentifier;
         juce::addDefaultFormatsToManager(formats);
         juce::OwnedArray<juce::PluginDescription> descriptions;
         for (auto* format : formats.getFormats())
-            if (format->fileMightContainThisPluginType(plugin.getFullPathName()))
-                format->findAllTypesForFile(descriptions, plugin.getFullPathName());
+            if (format->fileMightContainThisPluginType(identifier))
+                format->findAllTypesForFile(descriptions, identifier);
         if (descriptions.size() != 1) return fail("Expected exactly one plugin in the installed bundle");
         description = *descriptions[0];
-        // An AU description normally switches to a registry identifier. Keep
-        // the requested path so instantiation and loaded-image checks agree.
-        description.fileOrIdentifier = plugin.getFullPathName();
+        // Keep the requested file, or the explicit process-local AU factory
+        // identifier chosen above; never silently select an installed build.
+        description.fileOrIdentifier = identifier;
         juce::String error;
         processor = formats.createPluginInstance(description, rate, block, error);
         if (!processor) return fail("Cannot load installed plugin: " + error);
@@ -115,6 +119,7 @@ public:
         tone.reset();
         if (processor) processor->releaseResources();
         processor.reset();
+        if (testAuBundle) { CFRelease(testAuBundle); testAuBundle = nullptr; }
         if (activity)
         {
             [[NSProcessInfo processInfo] endActivity:activity];
@@ -125,6 +130,38 @@ public:
     void systemRequestedQuit() override { quit(); }
     void anotherInstanceStarted(const juce::String&) override {}
 private:
+    bool registerBuiltAudioUnit()
+    {
+        if (!plugin.hasFileExtension("component")) return false;
+        const auto path = plugin.getFullPathName();
+        auto url = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault,
+            reinterpret_cast<const UInt8*>(path.toRawUTF8()), static_cast<CFIndex>(path.getNumBytesAsUTF8()), true);
+        if (!url) return false;
+        testAuBundle = CFBundleCreate(kCFAllocatorDefault, url);
+        CFRelease(url);
+        if (!testAuBundle || !CFBundleLoadExecutable(testAuBundle)) return false;
+        auto* components = (NSArray*)CFBundleGetValueForInfoDictionaryKey(testAuBundle, CFSTR("AudioComponents"));
+        if (![components isKindOfClass:[NSArray class]] || components.count != 1) return false;
+        auto* metadata = (NSDictionary*)components.firstObject;
+        auto* name = (NSString*)metadata[@"factoryFunction"];
+        auto* type = (NSString*)metadata[@"type"];
+        if (![name isKindOfClass:[NSString class]] || ![type isKindOfClass:[NSString class]] || type.length != 4) return false;
+        auto factory = reinterpret_cast<AudioComponentFactoryFunction>(
+            CFBundleGetFunctionPointerForName(testAuBundle, (CFStringRef)name));
+        if (!factory) return false;
+        // JUCE's ordinary AU loader resolves a file via the system registry and
+        // may select the installed version. Private test IDs select this exact
+        // build's factory; AudioComponentRegister affects this process only.
+        AudioComponentDescription component {};
+        component.componentType = juce::ByteOrder::bigEndianInt(type.UTF8String);
+        component.componentSubType = 0x4d635473; // McTs
+        component.componentManufacturer = 0x54657374; // Test
+        const auto version = [metadata[@"version"] unsignedIntValue];
+        if (!AudioComponentRegister(&component, CFSTR("MConnect build validation"), version, factory)) return false;
+        auTestIdentifier = "AudioUnit:" + juce::String(type.UTF8String) + ",McTs,Test";
+        return true;
+    }
+
     class Window final : public juce::DocumentWindow
     {
     public:
@@ -226,6 +263,7 @@ private:
         object->setProperty("blockFrames", block);
         object->setProperty("gain", gain);
         object->setProperty("pluginPath", plugin.getFullPathName());
+        object->setProperty("processLocalAuRegistration", auTestIdentifier.isNotEmpty());
         object->setProperty("loadedBinary", loadedBinary);
         object->setProperty("format", description.pluginFormatName);
         object->setProperty("pluginVersion", description.version);
@@ -239,7 +277,8 @@ private:
     std::unique_ptr<InstalledToneSource> tone;
     std::unique_ptr<Window> window;
     juce::File plugin, info, control, snapshot;
-    juce::String url, loadedBinary;
+    juce::String url, loadedBinary, auTestIdentifier;
+    CFBundleRef testAuBundle = nullptr;
     double rate = 48000, deadline = 0, pairingDeadline = 0;
     int block = 256;
     float gain = 0.25f;

@@ -89,17 +89,33 @@ const {chromium, webkit, firefox} = require(process.env.MCONNECT_PLAYWRIGHT || "
         for(let i=0;i<data.length;i++) { const angle=2*Math.PI*freq*i/ctx.sampleRate; re+=data[i]*Math.cos(angle); im+=data[i]*Math.sin(angle); }
         return 2*Math.hypot(re,im)/data.length;
       };
-      const channels = analysers.map(analyser => {
+      const sampleWindow = () => analysers.map(analyser => {
         const data = new Float32Array(analyser.fftSize); analyser.getFloatTimeDomainData(data);
         const spectrum = new Float32Array(analyser.frequencyBinCount); analyser.getFloatFrequencyData(spectrum);
         let peak=1;for(let n=2;n<spectrum.length;n++)if(spectrum[n]>spectrum[peak])peak=n;
         return {rms:Math.sqrt(data.reduce((a,b)=>a+b*b,0)/data.length),tone997:magnitude(data,997),tone1499:magnitude(data,1499),peakHz:peak*ctx.sampleRate/analyser.fftSize};
       });
+      // NetEq can splice/time-adjust a frame while filling or reducing a
+      // reserve. One 43 ms phase correlation can then dip despite a correct
+      // spectrum and continuous energy. Keep independent windows as evidence.
+      const windows = [];
+      for (let index=0;index<3;++index) {
+        windows.push(sampleWindow());
+        if(index<2) await new Promise(resolve=>setTimeout(resolve,200));
+      }
+      const channels = [0,1].map(channel => windows.map(window=>window[channel])
+        .sort((a,b)=>channel===0 ? b.tone997-a.tone997 : b.tone1499-a.tone1499)[0]);
       const contextState = ctx.state, elapsed = ctx.currentTime;
-      return {sampleRate:ctx.sampleRate,channels,contextState,elapsed};
+      return {sampleRate:ctx.sampleRate,channels,windows,contextState,elapsed};
     });
     const measurement = await measureAudio();
     const assertStereo = (value, stage) => {
+      const windows = value.windows || [value.channels];
+      assert.ok(windows.filter(channels => channels[0].tone997>.12 && channels[1].tone1499>.12).length>=2,
+        stage + ": sustained stereo tones missing");
+      assert.ok(windows.every(channels => channels[0].rms>.1 && channels[1].rms>.1
+        && Math.abs(channels[0].peakHz-997)<40 && Math.abs(channels[1].peakHz-1499)<40
+        && channels[0].tone1499<.02 && channels[1].tone997<.02),stage + ": stereo energy/spectrum/crosstalk");
       assert.ok(value.channels[0].tone997 > .12, stage + ": left tone missing");
       assert.ok(value.channels[1].tone1499 > .12, stage + ": right tone missing");
       assert.ok(value.channels[0].tone1499 < .02 && value.channels[1].tone997 < .02,
@@ -168,6 +184,14 @@ const {chromium, webkit, firefox} = require(process.env.MCONNECT_PLAYWRIGHT || "
       await page.waitForTimeout(200);
     }
     await page.locator("#stop").click();
+    // Includes cancelling a newly connected receiver during its startup
+    // prefill: queued audio must not leak out after Stop or keep capture busy.
+    await page.waitForTimeout(300);
+    const stoppedStats = () => context.request.get(base + "/info",{headers:{"X-MConnect-Token":token}}).then(r => r.json());
+    const stopped = await stoppedStats();
+    assert.equal(stopped.listeners,0,"stopped receiver kept a listener slot");
+    await page.waitForTimeout(800);
+    assert.equal((await stoppedStats()).packetsSent,stopped.packetsSent,"RTP continued after Stop");
     await page.evaluate(() => window.testAudio.ctx.close());
     assert.deepEqual(errors,[],"browser runtime errors");
     console.log(JSON.stringify({result:"PASS",version:stats.version,engine,inputSampleRate:info.sampleRate,blockFrames:info.blockFrames || 256,decoded:measurement,afterRecovery,afterLongOutage,selectedIce,packets:stats.packetsSent,stereoPackets:stats.stereoPackets,reconnects:3,automaticRecovery:true,pairingRejection:true,autoplayFallback:true}));

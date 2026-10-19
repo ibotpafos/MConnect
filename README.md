@@ -1,8 +1,11 @@
-# MConnect
+# MConnect / Link
 
 Плагин для прослушивания звука из DAW на телефоне через QR-код. Производный от
 [PGStream](https://github.com/Andrulius/PGStream), с интерфейсом MConnect и
 переносимой сборкой. Лицензия AGPL-3.0-only; см. NOTICE.md.
+
+В GD Connect и списке плагинов DAW продукт называется **Link**, производитель —
+GD Connect. Идентификаторы и имена файлов MConnect сохраняются для совместимости.
 
 [Скачать установщик для macOS](https://github.com/ibotpafos/MConnect/releases/latest)
 · [Все релизы и исходники](https://github.com/ibotpafos/MConnect/releases).
@@ -10,7 +13,7 @@
 ## Использование
 
 1. Установите AU или VST3 и пересканируйте плагины в DAW.
-2. Поставьте MConnect последним на Master Bus или Listen Bus.
+2. Поставьте Link (в старых версиях MConnect) последним на Master Bus или Listen Bus.
 3. Подключите телефон и компьютер к одной локальной сети.
 4. Откройте плагин, отсканируйте QR-код, нажмите «Слушать» в браузере.
 Страница подключается заранее; если браузер разрешает автоматическое
@@ -31,18 +34,18 @@ Start/Stop, Copy link и номер версии. Сеть, свободный �
 
 ## Установка на macOS
 
-Откройте `dist/MConnect-0.1.5-macos-universal.pkg` двойным щелчком и пройдите
+Откройте `dist/MConnect-0.1.9-macos-universal.pkg` двойным щелчком и пройдите
 шаги обычного macOS Installer. Файл можно переслать другу целиком. Нужна macOS 11
 или новее; AU и VST3 содержат Apple Silicon и Intel. Плагины устанавливаются
 для текущего пользователя и при обновлении заменяются в тех же папках.
 Перед установкой закройте DAW; после установки при необходимости пересканируйте плагины.
 
-Текущая сборка использует ad-hoc подпись плагинов, без Developer ID и
+Релиз 0.1.9 сохраняет постоянную тестовую подпись GD Connect, без Developer ID и
 нотарификации. При открытии полученного через интернет файла macOS может
 потребовать разрешение. Порядок действий, пути установки и удаление:
 [docs/INSTALL.md](docs/INSTALL.md).
 
-Для ручной установки остаётся `dist/MConnect-0.1.5-macos-universal.zip`
+Для ручной установки остаётся `dist/MConnect-0.1.9-macos-universal.zip`
 с `Install.command`. Старый скрипт сохраняет предыдущие версии как `.backup-*`;
 обычный `.pkg` обновляет пакеты на месте.
 
@@ -80,7 +83,7 @@ AAX для Pro Tools требует отдельного SDK и здесь не 
 
 ```sh
 python3 scripts/package_macos.py build
-python3 tests/installer.py dist/MConnect-0.1.5-macos-universal.pkg
+python3 tests/installer.py dist/MConnect-0.1.9-macos-universal.pkg
 ```
 
 Скрипты сборки и установщика, все исходники, закреплённые версии зависимостей
@@ -91,6 +94,8 @@ python3 tests/installer.py dist/MConnect-0.1.5-macos-universal.pkg
 Проверки и ограничения: [docs/VALIDATION.md](docs/VALIDATION.md).
 Установленная 0.1.5, iPhone и повторяемые проверки без DAW:
 [docs/VALIDATION_INSTALLED_0.1.5.md](docs/VALIDATION_INSTALLED_0.1.5.md).
+Повторная передача, автоматический буфер и проверка слабой сети:
+[docs/RELIABLE_STREAMING.md](docs/RELIABLE_STREAMING.md).
 Разбор аналога: [docs/MIX_TO_MOBILE.md](docs/MIX_TO_MOBILE.md).
 Оптимизация и исправления 0.1.1: [docs/OPTIMIZATION.md](docs/OPTIMIZATION.md).
 Исправления состояния и потоков 0.1.2: [docs/STABILITY.md](docs/STABILITY.md).

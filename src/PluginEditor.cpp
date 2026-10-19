@@ -4,17 +4,16 @@ namespace mconnect
 {
 namespace
 {
-const juce::Colour background {0xff101016}, panel {0xff1b1b25}, muted {0xff9c9cab}, accent {0xffbcabff};
+const auto theme = gdkit::palette(gdkit::Product::mconnect);
+const auto background = theme.background, panel = theme.surface, muted = theme.muted;
 void text(juce::Graphics& g, const juce::String& value, juce::Rectangle<int> bounds, float size, juce::Colour colour, int style = juce::Font::plain, juce::Justification align = juce::Justification::centred)
 {
-    g.setColour(colour); g.setFont(juce::FontOptions(size, style)); g.drawFittedText(value, bounds, align, 2);
+    g.setColour(colour); g.setFont(gdkit::font(size, (style & juce::Font::bold) != 0)); g.drawFittedText(value, bounds, align, 2);
 }
 }
 MConnectAudioProcessorEditor::MConnectAudioProcessorEditor(MConnectAudioProcessor& p) : AudioProcessorEditor(p), owner(p)
 {
     owner.editorOpened();
-    look.setColour(juce::TextButton::buttonColourId, panel);
-    look.setColour(juce::TextButton::textColourOffId, accent);
     setLookAndFeel(&look);
     addAndMakeVisible(stream); addAndMakeVisible(copy); addAndMakeVisible(version);
     stream.onClick = [this]
@@ -29,7 +28,7 @@ MConnectAudioProcessorEditor::MConnectAudioProcessorEditor(MConnectAudioProcesso
     copy.setTooltip("Alternative to scanning the QR. The link includes the pairing key.");
     version.setText(juce::String("v") + MCONNECT_VERSION, juce::dontSendNotification);
     version.setJustificationType(juce::Justification::centred);
-    version.setFont(juce::FontOptions(11.0f));
+    version.setFont(gdkit::font(11.0f));
     version.setColour(juce::Label::textColourId, muted);
     version.setTooltip("Manage plugin updates in GD Connect.");
     setSize(420, 540); timerCallback(); startTimerHz(5);
@@ -81,22 +80,17 @@ void MConnectAudioProcessorEditor::timerCallback()
 void MConnectAudioProcessorEditor::paint(juce::Graphics& g)
 {
     g.fillAll(background);
-    g.setColour(accent); g.fillRoundedRectangle(28, 24, 34, 34, 10);
-    text(g, "M", {28, 25, 34, 30}, 23, background, juce::Font::bold);
-    text(g, "MConnect", {75, 22, 210, 38}, 24, juce::Colours::white, juce::Font::bold, juce::Justification::centredLeft);
-    text(g, currentStatus, {30, 76, 360, 24}, 13, running ? juce::Colour(0xff91e1b1) : muted);
+    gdkit::paintHeader(g, {28, 20, 260, 48}, theme, "Link", "Phone monitoring");
+    text(g, currentStatus, {30, 76, 360, 24}, 13, running ? theme.success : muted);
     g.setColour(panel); g.fillRoundedRectangle(70, 117, 280, 254, 18);
     g.setColour(juce::Colours::white); g.fillRoundedRectangle(90, 132, 240, 224, 12);
     if (qr.isValid()) g.drawImageAt(qr, 210 - qr.getWidth()/2, 244 - qr.getHeight()/2);
     else text(g, "Start the stream\nto connect your phone", {112, 204, 196, 80}, 17, background);
-    text(g, "Scan. Tap Listen. That's it.", {35, 384, 350, 24}, 16, juce::Colours::white, juce::Font::bold);
+    text(g, "Scan. Tap Listen. That's it.", {35, 384, 350, 24}, 16, theme.text, juce::Font::bold);
     for (int c = 0; c < 2; ++c)
     {
         const int y = 473 + c*10;
-        g.setColour(panel); g.fillRoundedRectangle(30, static_cast<float>(y), 360, 3, 1);
-        const float fill = juce::jlimit(0.0f, 1.0f, (juce::Decibels::gainToDecibels(displayedPeaks[c], -60.0f) + 60) / 60);
-        g.setColour(displayedPeaks[c] >= 1 ? juce::Colour(0xffff9b91) : accent);
-        g.fillRoundedRectangle(30, static_cast<float>(y), 360*fill, 3, 1);
+        gdkit::paintMeter(g, {30.0f, static_cast<float>(y), 360.0f, 3.0f}, displayedPeaks[c], theme);
     }
 }
 }
